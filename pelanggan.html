@@ -1,0 +1,772 @@
+﻿<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#0b0b0d">
+<title>FK Admin — Pelanggan</title>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+
+body{
+font-family:Inter,Arial,sans-serif;
+background:#0b0b0d;
+color:#fff
+}
+
+button,input{font:inherit}
+
+.sidebar{
+position:fixed;
+left:0;
+top:0;
+bottom:0;
+width:235px;
+background:#080809;
+border-right:1px solid #252528;
+padding:25px 18px;
+z-index:20
+}
+
+.logo{
+font-size:21px;
+font-weight:800;
+letter-spacing:2px;
+margin-bottom:38px
+}
+
+.logo span{
+display:block;
+font-size:9px;
+color:#666;
+letter-spacing:1.5px;
+font-weight:400;
+margin-top:4px
+}
+
+.menu{list-style:none}
+.menu li{margin-bottom:6px}
+
+.menu a{
+display:block;
+padding:12px 13px;
+border-radius:8px;
+color:#999;
+text-decoration:none;
+font-size:13px
+}
+
+.menu a:hover,
+.menu a.active{
+background:#fff;
+color:#111
+}
+
+.main{
+margin-left:235px;
+padding:30px
+}
+
+.topbar{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:22px
+}
+
+.topbar h1{font-size:29px}
+.clock{font-size:17px;font-weight:700}
+
+.search{
+background:#151518;
+border:1px solid #29292e;
+border-radius:11px;
+padding:15px;
+margin-bottom:18px
+}
+
+.search input{
+width:100%;
+background:#0c0c0e;
+border:1px solid #333;
+border-radius:8px;
+padding:13px;
+color:#fff;
+outline:none
+}
+
+.search input:focus{
+border-color:#d4af37
+}
+
+.customer-grid{
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:15px
+}
+
+.customer{
+background:#151518;
+border:1px solid #29292e;
+border-radius:13px;
+padding:19px
+}
+
+.customer-name{
+font-size:18px;
+font-weight:800
+}
+
+.customer-phone{
+color:#777;
+font-size:12px;
+margin-top:3px
+}
+
+.customer-stats{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:8px;
+margin:17px 0
+}
+
+.customer-stat{
+background:#101013;
+padding:10px;
+border-radius:8px
+}
+
+.customer-stat small{
+display:block;
+color:#666;
+font-size:9px
+}
+
+.customer-stat strong{
+display:block;
+margin-top:4px
+}
+
+.customer-service{
+font-size:12px;
+color:#aaa;
+margin-bottom:15px
+}
+
+.btn{
+width:100%;
+padding:10px;
+border:0;
+border-radius:7px;
+background:#fff;
+color:#111;
+font-weight:700;
+cursor:pointer
+}
+
+.empty{
+color:#666;
+padding:35px;
+text-align:center
+}
+
+.modal{
+position:fixed;
+inset:0;
+background:rgba(0,0,0,.8);
+display:none;
+align-items:center;
+justify-content:center;
+padding:20px;
+z-index:50
+}
+
+.modal.show{display:flex}
+
+.modal-box{
+background:#151518;
+border:1px solid #333;
+border-radius:15px;
+width:min(700px,100%);
+max-height:90vh;
+overflow:auto;
+padding:24px
+}
+
+.modal-head{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:20px
+}
+
+.close{
+border:0;
+background:none;
+color:#888;
+font-size:28px;
+cursor:pointer
+}
+
+.detail-grid{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:10px;
+margin-bottom:20px
+}
+
+.detail{
+background:#101013;
+padding:13px;
+border-radius:8px
+}
+
+.detail small{
+display:block;
+color:#666;
+font-size:10px
+}
+
+.detail strong{
+display:block;
+margin-top:4px
+}
+
+.history-item{
+padding:13px 0;
+border-bottom:1px solid #29292e;
+display:flex;
+justify-content:space-between;
+gap:15px;
+font-size:12px
+}
+
+.history-meta{
+color:#777;
+margin-top:3px
+}
+
+.edit{
+margin-top:22px;
+padding-top:20px;
+border-top:1px solid #29292e
+}
+
+.edit label{
+display:block;
+font-size:11px;
+color:#777;
+margin-bottom:6px
+}
+
+.edit input{
+width:100%;
+padding:11px;
+background:#0c0c0e;
+border:1px solid #333;
+color:#fff;
+border-radius:7px;
+margin-bottom:12px
+}
+
+.modal-actions{
+display:flex;
+gap:8px
+}
+
+.save{
+background:#d4af37
+}
+
+.delete{
+background:#4a2020;
+color:#ef6262
+}
+
+@media(max-width:1000px){
+.customer-grid{grid-template-columns:1fr 1fr}
+.sidebar{width:190px}
+.main{margin-left:190px}
+}
+
+@media(max-width:650px){
+.sidebar{
+position:relative;
+width:100%
+}
+
+.menu{
+display:grid;
+grid-template-columns:1fr 1fr
+}
+
+.main{
+margin-left:0;
+padding:18px
+}
+
+.customer-grid{
+grid-template-columns:1fr
+}
+
+.detail-grid{
+grid-template-columns:1fr
+}
+}
+</style>
+</head>
+
+<body>
+
+<aside class="sidebar">
+
+<div class="logo">
+FK
+<span>HAIRSTUDIO & BARBERSHOP</span>
+</div>
+
+<ul class="menu">
+<li><a href="admin.html">Dashboard</a></li>
+<li><a href="admin.html#antrean">Antrean</a></li>
+<li><a class="active" href="pelanggan.html">Pelanggan</a></li>
+<li><a href="laporan.html">Laporan</a></li>
+<li><a href="index.html">Website Customer</a></li>
+</ul>
+
+</aside>
+
+<main class="main">
+
+<div class="topbar">
+<h1>Data Pelanggan</h1>
+<div class="clock" id="clock"></div>
+</div>
+
+<div class="search">
+<input
+id="search"
+placeholder="Cari nama atau nomor HP..."
+oninput="render()">
+</div>
+
+<div id="customerGrid" class="customer-grid"></div>
+
+</main>
+
+<div id="modal" class="modal">
+
+<div class="modal-box">
+
+<div class="modal-head">
+<h2>Detail Pelanggan</h2>
+<button class="close" onclick="closeModal()">×</button>
+</div>
+
+<div class="detail-grid">
+
+<div class="detail">
+<small>NAMA</small>
+<strong id="detailName">-</strong>
+</div>
+
+<div class="detail">
+<small>NO. HP</small>
+<strong id="detailPhone">-</strong>
+</div>
+
+<div class="detail">
+<small>TOTAL KUNJUNGAN</small>
+<strong id="detailVisits">-</strong>
+</div>
+
+<div class="detail">
+<small>TOTAL PENGELUARAN</small>
+<strong id="detailSpend">-</strong>
+</div>
+
+</div>
+
+<h3>Riwayat Kunjungan</h3>
+
+<div id="history"></div>
+
+<div class="edit">
+
+<label>NAMA</label>
+<input id="editName">
+
+<label>NO. HP</label>
+<input id="editPhone">
+
+<div class="modal-actions">
+
+<button class="btn save" onclick="saveCustomer()">
+Simpan
+</button>
+
+<button class="btn delete" onclick="deleteCustomer()">
+Hapus Pelanggan
+</button>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+<script>
+
+let data=[];
+
+try{
+data=JSON.parse(localStorage.getItem("barberData")||"[]");
+if(!Array.isArray(data)) data=[];
+}catch(e){
+data=[];
+}
+
+let selectedPhone=null;
+
+function save(){
+localStorage.setItem("barberData",JSON.stringify(data));
+}
+
+function rupiah(n){
+return new Intl.NumberFormat("id-ID",{
+style:"currency",
+currency:"IDR",
+maximumFractionDigits:0
+}).format(Number(n)||0);
+}
+
+function norm(hp){
+
+let x=String(hp||"").replace(/\D/g,"");
+
+if(x.startsWith("62")){
+x="0"+x.substring(2);
+}
+
+return x;
+}
+
+function escapeHTML(value){
+return String(value??"")
+.replace(/&/g,"&amp;")
+.replace(/</g,"&lt;")
+.replace(/>/g,"&gt;")
+.replace(/"/g,"&quot;")
+.replace(/'/g,"&#039;");
+}
+
+function formatTanggal(tanggal){
+
+if(!tanggal) return "-";
+
+const p=String(tanggal).split("-");
+
+if(p.length!==3) return String(tanggal);
+
+const bulan=[
+"Januari","Februari","Maret","April","Mei","Juni",
+"Juli","Agustus","September","Oktober","November","Desember"
+];
+
+return Number(p[2])+" "+bulan[Number(p[1])-1]+" "+p[0];
+
+}
+
+function clock(){
+
+document.getElementById("clock").textContent=
+new Date().toLocaleTimeString("id-ID",{
+hour:"2-digit",
+minute:"2-digit",
+second:"2-digit"
+});
+
+}
+
+setInterval(clock,1000);
+clock();
+
+function render(){
+
+const q=
+document.getElementById("search")
+.value
+.toLowerCase()
+.trim();
+
+const groups={};
+
+data.forEach(x=>{
+
+const phone=norm(x.hp);
+
+if(!phone) return;
+
+if(!groups[phone]){
+groups[phone]=[];
+}
+
+groups[phone].push(x);
+
+});
+
+const customers=
+Object.entries(groups)
+.map(([phone,records])=>{
+
+const sorted=
+[...records].sort((a,b)=>
+String(b.tanggal).localeCompare(String(a.tanggal))||
+Number(b.id||0)-Number(a.id||0)
+);
+
+const selesai=
+records.filter(x=>x.status==="Selesai");
+
+return {
+phone,
+records,
+last:sorted[0],
+visits:selesai.length,
+allVisits:records.length,
+spend:selesai.reduce(
+(a,b)=>a+Number(b.harga||0),0
+)
+};
+
+})
+.filter(x=>{
+
+const nama=String(x.last?.nama||"").toLowerCase();
+
+return !q||
+nama.includes(q)||
+x.phone.includes(q);
+
+})
+.sort((a,b)=>
+String(b.last?.tanggal||"")
+.localeCompare(String(a.last?.tanggal||""))
+);
+
+const grid=
+document.getElementById("customerGrid");
+
+if(!customers.length){
+
+grid.innerHTML=
+'<div class="empty">Pelanggan tidak ditemukan.</div>';
+
+return;
+
+}
+
+grid.innerHTML=
+customers.map(c=>
+
+'<div class="customer">'+
+
+'<div class="customer-name">'+
+escapeHTML(c.last.nama)+
+'</div>'+
+
+'<div class="customer-phone">'+
+escapeHTML(c.phone)+
+'</div>'+
+
+'<div class="customer-stats">'+
+
+'<div class="customer-stat">'+
+'<small>KUNJUNGAN SELESAI</small>'+
+'<strong>'+c.visits+'x</strong>'+
+'</div>'+
+
+'<div class="customer-stat">'+
+'<small>TOTAL BELANJA</small>'+
+'<strong>'+rupiah(c.spend)+'</strong>'+
+'</div>'+
+
+'</div>'+
+
+'<div class="customer-service">'+
+'Terakhir: '+
+escapeHTML(c.last.layanan)+
+'</div>'+
+
+'<button class="btn" onclick="openCustomer(\''+
+c.phone+
+'\')">Lihat Detail</button>'+
+
+'</div>'
+
+).join("");
+
+}
+
+function openCustomer(phone){
+
+selectedPhone=phone;
+
+const records=
+data.filter(x=>norm(x.hp)===phone);
+
+const sorted=
+[...records].sort((a,b)=>
+String(b.tanggal).localeCompare(String(a.tanggal))||
+Number(b.id||0)-Number(a.id||0)
+);
+
+const selesai=
+records.filter(x=>x.status==="Selesai");
+
+document.getElementById("detailName").textContent=
+sorted[0]?.nama||"-";
+
+document.getElementById("detailPhone").textContent=
+phone;
+
+document.getElementById("detailVisits").textContent=
+selesai.length+"x";
+
+document.getElementById("detailSpend").textContent=
+rupiah(
+selesai.reduce(
+(a,b)=>a+Number(b.harga||0),0
+)
+);
+
+document.getElementById("editName").value=
+sorted[0]?.nama||"";
+
+document.getElementById("editPhone").value=
+phone;
+
+document.getElementById("history").innerHTML=
+sorted.map(x=>
+
+'<div class="history-item">'+
+
+'<div>'+
+
+'<strong>'+
+escapeHTML(x.layanan)+
+'</strong>'+
+
+'<div class="history-meta">'+
+escapeHTML(formatTanggal(x.tanggal))+
+(x.jamBooking?
+" • "+escapeHTML(x.jamBooking):"")+
+" • "+
+escapeHTML(x.status)+
+'</div>'+
+
+'</div>'+
+
+'<strong>'+
+rupiah(x.harga)+
+'</strong>'+
+
+'</div>'
+
+).join("");
+
+document.getElementById("modal")
+.classList.add("show");
+
+}
+
+function closeModal(){
+
+document.getElementById("modal")
+.classList.remove("show");
+
+selectedPhone=null;
+
+}
+
+function saveCustomer(){
+
+if(!selectedPhone) return;
+
+const name=
+document.getElementById("editName")
+.value.trim();
+
+const phone=
+norm(
+document.getElementById("editPhone").value
+);
+
+if(!name || phone.length<8){
+
+alert("Nama atau nomor HP tidak valid.");
+
+return;
+
+}
+
+const oldPhone=selectedPhone;
+
+data.forEach(x=>{
+
+if(norm(x.hp)===oldPhone){
+
+x.nama=name;
+x.hp=phone;
+
+}
+
+});
+
+save();
+
+closeModal();
+
+render();
+
+}
+
+function deleteCustomer(){
+
+if(!selectedPhone) return;
+
+if(!confirm(
+"Hapus seluruh riwayat pelanggan ini?"
+)){
+return;
+}
+
+data=
+data.filter(x=>
+norm(x.hp)!==selectedPhone
+);
+
+save();
+
+closeModal();
+
+render();
+
+}
+
+document.getElementById("modal")
+.addEventListener("click",e=>{
+
+if(e.target.id==="modal"){
+closeModal();
+}
+
+});
+
+render();
+
+</script>
+
+</body>
+</html>

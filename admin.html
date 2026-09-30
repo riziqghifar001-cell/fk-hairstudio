@@ -1,0 +1,912 @@
+﻿<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#0b0b0d">
+<title>FK Admin — Dashboard</title>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+
+body{
+font-family:Inter,Arial,sans-serif;
+background:#0b0b0d;
+color:#fff
+}
+
+button,input{font:inherit}
+
+:root{
+--gold:#d4af37;
+--card:#151518;
+--line:#29292e;
+--muted:#888;
+--green:#43d17b;
+--red:#ef6262;
+--blue:#69a7ff
+}
+
+.sidebar{
+position:fixed;
+left:0;
+top:0;
+bottom:0;
+width:235px;
+background:#080809;
+border-right:1px solid #252528;
+padding:25px 18px;
+z-index:20
+}
+
+.logo{
+font-size:21px;
+font-weight:800;
+letter-spacing:2px;
+margin-bottom:38px
+}
+
+.logo span{
+display:block;
+font-size:9px;
+color:#666;
+letter-spacing:1.5px;
+font-weight:400;
+margin-top:4px
+}
+
+.menu{list-style:none}
+.menu li{margin-bottom:6px}
+
+.menu a{
+display:block;
+padding:12px 13px;
+border-radius:8px;
+color:#999;
+text-decoration:none;
+font-size:13px
+}
+
+.menu a:hover,
+.menu a.active{
+background:#fff;
+color:#111
+}
+
+.main{
+margin-left:235px;
+padding:30px;
+max-width:1500px
+}
+
+.topbar{
+display:flex;
+justify-content:space-between;
+align-items:flex-start;
+margin-bottom:25px;
+gap:20px
+}
+
+.topbar h1{font-size:30px}
+
+.date-display{
+color:#777;
+margin-top:5px;
+font-size:13px
+}
+
+.clock{
+text-align:right;
+font-size:19px;
+font-weight:700
+}
+
+.date-control{
+margin-top:10px;
+padding:9px 11px;
+background:#151518;
+border:1px solid #333;
+border-radius:8px
+}
+
+.date-control label{
+display:block;
+font-size:10px;
+color:#666;
+margin-bottom:5px
+}
+
+.date-control input{
+background:#0b0b0d;
+color:#fff;
+border:1px solid #333;
+border-radius:5px;
+padding:6px
+}
+
+.stats{
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:14px;
+margin-bottom:14px
+}
+
+.stat{
+background:var(--card);
+border:1px solid var(--line);
+border-radius:13px;
+padding:20px
+}
+
+.stat small{
+font-size:10px;
+color:#777;
+letter-spacing:1px
+}
+
+.stat h2{
+margin-top:9px;
+font-size:27px
+}
+
+.small-stats{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:14px;
+margin-bottom:22px
+}
+
+.small-stat{
+background:var(--card);
+border:1px solid var(--line);
+border-radius:13px;
+padding:17px
+}
+
+.small-stat small{
+color:#777;
+font-size:10px
+}
+
+.small-stat strong{
+display:block;
+font-size:22px;
+margin-top:6px
+}
+
+.current{
+background:#121215;
+border:1px solid #333;
+border-radius:13px;
+padding:18px;
+margin-bottom:22px
+}
+
+.current-title{
+font-size:10px;
+color:#777;
+letter-spacing:1.5px;
+margin-bottom:12px
+}
+
+.current-box{
+display:flex;
+justify-content:space-between;
+align-items:center;
+gap:15px
+}
+
+.current-name{
+font-size:20px;
+font-weight:800
+}
+
+.current-meta{
+color:#888;
+font-size:12px;
+margin-top:3px
+}
+
+.empty{
+color:#666;
+font-size:13px
+}
+
+.content{
+display:grid;
+grid-template-columns:2fr 1fr;
+gap:18px
+}
+
+.card{
+background:var(--card);
+border:1px solid var(--line);
+border-radius:13px;
+padding:20px
+}
+
+.card h2{
+font-size:17px;
+margin-bottom:17px
+}
+
+.table-wrap{
+overflow-x:auto
+}
+
+table{
+width:100%;
+border-collapse:collapse;
+min-width:780px
+}
+
+th{
+text-align:left;
+font-size:10px;
+color:#666;
+padding:11px 8px;
+border-bottom:1px solid #29292e
+}
+
+td{
+padding:13px 8px;
+font-size:12px;
+border-bottom:1px solid #222;
+vertical-align:middle
+}
+
+.status{
+display:inline-block;
+padding:5px 8px;
+border-radius:20px;
+font-size:10px;
+background:#242428;
+color:#aaa
+}
+
+.status.menunggu{color:#ddd}
+.status.dipanggil{color:#69a7ff}
+.status.dilayani{color:#d4af37}
+.status.selesai{color:#43d17b}
+.status.batal{color:#ef6262}
+
+.actions{
+display:flex;
+gap:5px;
+flex-wrap:wrap
+}
+
+.action{
+border:0;
+border-radius:6px;
+padding:7px 9px;
+font-size:10px;
+cursor:pointer
+}
+
+.btn-call{background:#fff;color:#111}
+.btn-start{background:#d4af37;color:#111}
+.btn-done{background:#43d17b;color:#111}
+.btn-cancel{background:#432020;color:#ef6262}
+.btn-reset{background:#29292d;color:#aaa}
+
+.service-row{
+display:flex;
+justify-content:space-between;
+padding:13px 0;
+border-bottom:1px solid #29292e;
+font-size:12px
+}
+
+.service-count{font-weight:800}
+
+.reset{
+margin-top:20px;
+padding-top:18px;
+border-top:1px solid #29292e
+}
+
+.reset button{
+background:none;
+border:1px solid #333;
+color:#777;
+border-radius:7px;
+padding:8px 10px;
+font-size:10px;
+cursor:pointer
+}
+
+@media(max-width:1050px){
+.sidebar{width:190px}
+.main{margin-left:190px}
+.stats{grid-template-columns:1fr 1fr}
+.content{grid-template-columns:1fr}
+}
+
+@media(max-width:650px){
+.sidebar{
+position:relative;
+width:100%;
+padding:18px
+}
+
+.menu{
+display:grid;
+grid-template-columns:1fr 1fr
+}
+
+.main{
+margin-left:0;
+padding:18px
+}
+
+.topbar{display:block}
+
+.clock{
+text-align:left;
+margin-top:15px
+}
+
+.stats{
+grid-template-columns:1fr 1fr
+}
+
+.small-stats{
+grid-template-columns:1fr 1fr
+}
+}
+</style>
+</head>
+
+<body>
+
+<aside class="sidebar">
+
+<div class="logo">
+FK
+<span>HAIRSTUDIO & BARBERSHOP</span>
+</div>
+
+<ul class="menu">
+<li><a class="active" href="admin.html">Dashboard</a></li>
+<li><a href="#antrean">Antrean</a></li>
+<li><a href="pelanggan.html">Pelanggan</a></li>
+<li><a href="laporan.html">Laporan</a></li>
+<li><a href="index.html">Website Customer</a></li>
+</ul>
+
+</aside>
+
+<main class="main">
+
+<div class="topbar">
+
+<div>
+<h1>Dashboard</h1>
+<div id="tanggalDisplay" class="date-display"></div>
+</div>
+
+<div>
+
+<div id="jam" class="clock"></div>
+
+<div class="date-control">
+<label>TANGGAL LAPORAN</label>
+<input type="date" id="tanggalLaporan">
+</div>
+
+</div>
+
+</div>
+
+<div class="stats">
+
+<div class="stat">
+<small>PELANGGAN UNIK</small>
+<h2 id="total">0</h2>
+</div>
+
+<div class="stat">
+<small>MENUNGGU</small>
+<h2 id="menunggu">0</h2>
+</div>
+
+<div class="stat">
+<small>SELESAI</small>
+<h2 id="selesai">0</h2>
+</div>
+
+<div class="stat">
+<small>PENDAPATAN</small>
+<h2 id="pendapatan">Rp0</h2>
+</div>
+
+</div>
+
+<div class="small-stats">
+
+<div class="small-stat">
+<small>CUSTOMER BARU</small>
+<strong id="customerBaru">0</strong>
+</div>
+
+<div class="small-stat">
+<small>CUSTOMER LAMA</small>
+<strong id="customerLama">0</strong>
+</div>
+
+</div>
+
+<div class="current">
+
+<div class="current-title">
+SEDANG DILAYANI
+</div>
+
+<div id="currentCustomer">
+<div class="empty">
+Belum ada pelanggan yang sedang dilayani.
+</div>
+</div>
+
+</div>
+
+<div class="content">
+
+<div class="card" id="antrean">
+
+<h2>Antrean Hari Ini</h2>
+
+<div class="table-wrap">
+
+<table>
+
+<thead>
+<tr>
+<th>NO</th>
+<th>NAMA</th>
+<th>HP</th>
+<th>LAYANAN</th>
+<th>JENIS</th>
+<th>JAM</th>
+<th>STATUS</th>
+<th>AKSI</th>
+</tr>
+</thead>
+
+<tbody id="antreanTable"></tbody>
+
+</table>
+
+</div>
+
+</div>
+
+<div class="card">
+
+<h2>Layanan Selesai</h2>
+
+<div id="layananList"></div>
+
+<div class="reset">
+<button onclick="resetPrototype()">Reset Semua Data</button>
+</div>
+
+</div>
+
+</div>
+
+</main>
+
+<script>
+
+let data=[];
+
+try{
+data=JSON.parse(localStorage.getItem("barberData")||"[]");
+if(!Array.isArray(data)) data=[];
+}catch(e){
+data=[];
+}
+
+function simpan(){
+localStorage.setItem("barberData",JSON.stringify(data));
+}
+
+function today(){
+const d=new Date();
+
+return d.getFullYear()+"-"+
+String(d.getMonth()+1).padStart(2,"0")+"-"+
+String(d.getDate()).padStart(2,"0");
+}
+
+function rupiah(n){
+return new Intl.NumberFormat("id-ID",{
+style:"currency",
+currency:"IDR",
+maximumFractionDigits:0
+}).format(Number(n)||0);
+}
+
+function norm(hp){
+let x=String(hp||"").replace(/\D/g,"");
+
+if(x.startsWith("62")){
+x="0"+x.substring(2);
+}
+
+return x;
+}
+
+function escapeHTML(value){
+return String(value??"")
+.replace(/&/g,"&amp;")
+.replace(/</g,"&lt;")
+.replace(/>/g,"&gt;")
+.replace(/"/g,"&quot;")
+.replace(/'/g,"&#039;");
+}
+
+function formatTanggal(tanggal){
+
+if(!tanggal) return "-";
+
+const p=String(tanggal).split("-");
+
+if(p.length!==3) return String(tanggal);
+
+const bulan=[
+"Januari","Februari","Maret","April","Mei","Juni",
+"Juli","Agustus","September","Oktober","November","Desember"
+];
+
+return Number(p[2])+" "+bulan[Number(p[1])-1]+" "+p[0];
+}
+
+function clock(){
+
+document.getElementById("jam").textContent=
+new Date().toLocaleTimeString("id-ID",{
+hour:"2-digit",
+minute:"2-digit",
+second:"2-digit"
+});
+
+}
+
+setInterval(clock,1000);
+clock();
+
+function statusClass(status){
+
+return {
+"Menunggu":"menunggu",
+"Dipanggil":"dipanggil",
+"Sedang Dilayani":"dilayani",
+"Selesai":"selesai",
+"Batal":"batal"
+}[status]||"menunggu";
+
+}
+
+function customerPhones(records){
+
+return new Set(
+records
+.map(x=>norm(x.hp))
+.filter(Boolean)
+);
+
+}
+
+function render(){
+
+const tanggal=
+document.getElementById("tanggalLaporan").value||today();
+
+const hari=
+data.filter(x=>x.tanggal===tanggal);
+
+const selesai=
+hari.filter(x=>x.status==="Selesai");
+
+const uniquePhones=
+customerPhones(hari);
+
+document.getElementById("total").textContent=
+uniquePhones.size;
+
+document.getElementById("menunggu").textContent=
+hari.filter(x=>
+x.status==="Menunggu"||
+x.status==="Dipanggil"
+).length;
+
+document.getElementById("selesai").textContent=
+selesai.length;
+
+document.getElementById("pendapatan").textContent=
+rupiah(
+selesai.reduce(
+(a,b)=>a+Number(b.harga||0),0
+)
+);
+
+document.getElementById("customerBaru").textContent=
+[...uniquePhones].filter(phone=>
+data.filter(x=>norm(x.hp)===phone).length===1
+).length;
+
+document.getElementById("customerLama").textContent=
+[...uniquePhones].filter(phone=>
+data.filter(x=>norm(x.hp)===phone).length>1
+).length;
+
+document.getElementById("tanggalDisplay").textContent=
+formatTanggal(tanggal);
+
+const current=
+hari.find(x=>x.status==="Sedang Dilayani");
+
+if(current){
+
+const index=data.indexOf(current);
+
+document.getElementById("currentCustomer").innerHTML=
+'<div class="current-box">'+
+'<div>'+
+'<div class="current-name">'+
+escapeHTML(current.nomorAntrean)+" — "+
+escapeHTML(current.nama)+
+'</div>'+
+'<div class="current-meta">'+
+escapeHTML(current.layanan)+
+" • "+
+escapeHTML(current.jenis)+
+(current.jamBooking?
+" • "+escapeHTML(current.jamBooking):"")+
+'</div>'+
+'</div>'+
+'<button class="action btn-done" onclick="selesai('+index+')">Selesai</button>'+
+'</div>';
+
+}else{
+
+document.getElementById("currentCustomer").innerHTML=
+'<div class="empty">Belum ada pelanggan yang sedang dilayani.</div>';
+
+}
+
+const antrean=[...hari].sort((a,b)=>{
+
+if(a.status==="Batal" && b.status!=="Batal") return 1;
+if(a.status!=="Batal" && b.status==="Batal") return -1;
+
+if(a.jenis==="Booking" && b.jenis==="Booking"){
+return String(a.jamBooking||"99:99")
+.localeCompare(String(b.jamBooking||"99:99"));
+}
+
+if(a.jenis==="Booking" && b.jenis!=="Booking") return -1;
+if(a.jenis!=="Booking" && b.jenis==="Booking") return 1;
+
+return Number(a.id||0)-Number(b.id||0);
+
+});
+
+const table=
+document.getElementById("antreanTable");
+
+if(!antrean.length){
+
+table.innerHTML=
+'<tr><td colspan="8">'+
+'<div class="empty">Tidak ada antrean pada tanggal ini.</div>'+
+'</td></tr>';
+
+}else{
+
+table.innerHTML=antrean.map(x=>{
+
+const index=data.indexOf(x);
+const status=x.status||"Menunggu";
+
+let action="";
+
+if(status==="Menunggu"){
+
+action=
+'<button class="action btn-call" onclick="panggil('+index+')">Panggil</button>'+
+'<button class="action btn-cancel" onclick="batal('+index+')">Batal</button>';
+
+}
+
+if(status==="Dipanggil"){
+
+action=
+'<button class="action btn-start" onclick="mulai('+index+')">Mulai</button>'+
+'<button class="action btn-cancel" onclick="batal('+index+')">Batal</button>';
+
+}
+
+if(status==="Sedang Dilayani"){
+
+action=
+'<button class="action btn-done" onclick="selesai('+index+')">Selesai</button>';
+
+}
+
+if(status==="Selesai"){
+
+action=
+'<button class="action btn-reset" onclick="bukaLagi('+index+')">Buka Lagi</button>';
+
+}
+
+if(status==="Batal"){
+
+action=
+'<button class="action btn-reset" onclick="bukaLagi('+index+')">Aktifkan</button>';
+
+}
+
+return '<tr>'+
+'<td>'+escapeHTML(x.nomorAntrean)+'</td>'+
+'<td>'+escapeHTML(x.nama)+'</td>'+
+'<td>'+escapeHTML(x.hp)+'</td>'+
+'<td>'+escapeHTML(x.layanan)+'</td>'+
+'<td>'+escapeHTML(x.jenis)+'</td>'+
+'<td>'+escapeHTML(x.jamBooking||"-")+'</td>'+
+'<td><span class="status '+statusClass(status)+'">'+
+escapeHTML(status)+
+'</span></td>'+
+'<td><div class="actions">'+action+'</div></td>'+
+'</tr>';
+
+}).join("");
+
+}
+
+const counts={};
+
+selesai.forEach(x=>{
+counts[x.layanan]=(counts[x.layanan]||0)+1;
+});
+
+const sorted=
+Object.entries(counts)
+.sort((a,b)=>b[1]-a[1]);
+
+document.getElementById("layananList").innerHTML=
+sorted.length?
+sorted.map(x=>
+'<div class="service-row">'+
+'<span>'+escapeHTML(x[0])+'</span>'+
+'<span class="service-count">'+x[1]+'x</span>'+
+'</div>'
+).join(""):
+'<div class="empty">Belum ada transaksi selesai.</div>';
+
+}
+
+function panggil(i){
+
+if(!data[i] || data[i].status!=="Menunggu") return;
+
+data[i].status="Dipanggil";
+data[i].dipanggilPada=new Date().toISOString();
+
+simpan();
+render();
+
+}
+
+function mulai(i){
+
+if(!data[i] || data[i].status!=="Dipanggil") return;
+
+const adaYangDilayani=data.some((x,j)=>
+j!==i &&
+x.tanggal===data[i].tanggal &&
+x.status==="Sedang Dilayani"
+);
+
+if(adaYangDilayani){
+
+alert("Masih ada pelanggan lain yang sedang dilayani.");
+
+return;
+
+}
+
+data[i].status="Sedang Dilayani";
+data[i].mulaiPada=new Date().toISOString();
+
+simpan();
+render();
+
+}
+
+function selesai(i){
+
+if(!data[i] || data[i].status!=="Sedang Dilayani") return;
+
+data[i].status="Selesai";
+data[i].selesaiPada=new Date().toISOString();
+
+simpan();
+render();
+
+}
+
+function batal(i){
+
+if(!data[i]) return;
+
+if(
+data[i].status==="Selesai"||
+data[i].status==="Batal"
+){
+return;
+}
+
+if(!confirm(
+"Batalkan antrean "+
+data[i].nomorAntrean+
+"?")){
+return;
+}
+
+data[i].status="Batal";
+data[i].dibatalkanPada=new Date().toISOString();
+
+simpan();
+render();
+
+}
+
+function bukaLagi(i){
+
+if(!data[i]) return;
+
+data[i].status="Menunggu";
+data[i].dipanggilPada=null;
+data[i].mulaiPada=null;
+data[i].selesaiPada=null;
+data[i].dibatalkanPada=null;
+
+simpan();
+render();
+
+}
+
+function resetPrototype(){
+
+if(!confirm(
+"PERINGATAN!\n\n"+
+"Semua data barber akan dihapus.\n\n"+
+"Lanjutkan?"
+)){
+return;
+}
+
+localStorage.removeItem("barberData");
+
+data=[];
+
+render();
+
+}
+
+document.getElementById("tanggalLaporan").value=today();
+
+document.getElementById("tanggalLaporan")
+.addEventListener("change",render);
+
+render();
+
+</script>
+
+</body>
+</html>

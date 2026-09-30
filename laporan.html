@@ -1,0 +1,693 @@
+﻿<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#0b0b0d">
+<title>FK Admin — Laporan</title>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+
+body{
+font-family:Inter,Arial,sans-serif;
+background:#0b0b0d;
+color:#fff
+}
+
+button,input,select{font:inherit}
+
+.sidebar{
+position:fixed;
+left:0;
+top:0;
+bottom:0;
+width:235px;
+background:#080809;
+border-right:1px solid #252528;
+padding:25px 18px;
+z-index:20
+}
+
+.logo{
+font-size:21px;
+font-weight:800;
+letter-spacing:2px;
+margin-bottom:38px
+}
+
+.logo span{
+display:block;
+font-size:9px;
+color:#666;
+letter-spacing:1.5px;
+font-weight:400
+}
+
+.menu{list-style:none}
+.menu li{margin-bottom:6px}
+
+.menu a{
+display:block;
+padding:12px 13px;
+border-radius:8px;
+color:#999;
+text-decoration:none;
+font-size:13px
+}
+
+.menu a:hover,
+.menu a.active{
+background:#fff;
+color:#111
+}
+
+.main{
+margin-left:235px;
+padding:30px;
+max-width:1500px
+}
+
+.topbar{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:22px
+}
+
+.topbar h1{font-size:29px}
+.clock{font-size:17px;font-weight:700}
+
+.filter{
+background:#151518;
+border:1px solid #29292e;
+border-radius:13px;
+padding:17px;
+display:flex;
+gap:12px;
+align-items:end;
+margin-bottom:18px
+}
+
+.filter-group{flex:1}
+
+.filter label{
+display:block;
+font-size:10px;
+color:#777;
+margin-bottom:6px
+}
+
+.filter select,
+.filter input{
+width:100%;
+padding:11px;
+background:#0b0b0d;
+border:1px solid #333;
+border-radius:7px;
+color:#fff
+}
+
+.btn{
+padding:11px 18px;
+border:0;
+border-radius:7px;
+background:#d4af37;
+color:#111;
+font-weight:700;
+cursor:pointer
+}
+
+.stats{
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:14px;
+margin-bottom:18px
+}
+
+.stat{
+background:#151518;
+border:1px solid #29292e;
+border-radius:13px;
+padding:20px
+}
+
+.stat small{
+color:#777;
+font-size:10px
+}
+
+.stat h2{
+margin-top:7px;
+font-size:26px
+}
+
+.gold h2{color:#d4af37}
+
+.grid{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:18px
+}
+
+.card{
+background:#151518;
+border:1px solid #29292e;
+border-radius:13px;
+padding:20px
+}
+
+.card h2{
+font-size:17px;
+margin-bottom:17px
+}
+
+.service-row{
+display:flex;
+justify-content:space-between;
+padding:13px 0;
+border-bottom:1px solid #29292e;
+font-size:12px
+}
+
+.service-row strong{color:#d4af37}
+
+table{
+width:100%;
+border-collapse:collapse;
+min-width:700px
+}
+
+th{
+text-align:left;
+font-size:10px;
+color:#666;
+padding:10px 7px;
+border-bottom:1px solid #29292e
+}
+
+td{
+font-size:11px;
+padding:12px 7px;
+border-bottom:1px solid #222
+}
+
+.table-wrap{overflow:auto}
+
+.empty{
+color:#666;
+padding:25px;
+text-align:center
+}
+
+@media(max-width:1000px){
+.sidebar{width:190px}
+.main{margin-left:190px}
+.stats{grid-template-columns:1fr 1fr}
+.grid{grid-template-columns:1fr}
+}
+
+@media(max-width:650px){
+.sidebar{
+position:relative;
+width:100%
+}
+
+.menu{
+display:grid;
+grid-template-columns:1fr 1fr
+}
+
+.main{
+margin-left:0;
+padding:18px
+}
+
+.filter{
+display:block
+}
+
+.filter-group{
+margin-bottom:10px
+}
+
+.stats{
+grid-template-columns:1fr 1fr
+}
+}
+</style>
+</head>
+
+<body>
+
+<aside class="sidebar">
+
+<div class="logo">
+FK
+<span>HAIRSTUDIO & BARBERSHOP</span>
+</div>
+
+<ul class="menu">
+<li><a href="admin.html">Dashboard</a></li>
+<li><a href="admin.html#antrean">Antrean</a></li>
+<li><a href="pelanggan.html">Pelanggan</a></li>
+<li><a class="active" href="laporan.html">Laporan</a></li>
+<li><a href="index.html">Website Customer</a></li>
+</ul>
+
+</aside>
+
+<main class="main">
+
+<div class="topbar">
+<h1>Laporan</h1>
+<div id="clock" class="clock"></div>
+</div>
+
+<div class="filter">
+
+<div class="filter-group">
+<label>PERIODE</label>
+
+<select id="periode" onchange="ubahPeriode()">
+<option value="hari">Hari Ini</option>
+<option value="kemarin">Kemarin</option>
+<option value="minggu">7 Hari Terakhir</option>
+<option value="bulan">Bulan Ini</option>
+<option value="semua">Semua Data</option>
+<option value="custom">Tanggal Tertentu</option>
+</select>
+
+</div>
+
+<div class="filter-group">
+
+<label>TANGGAL</label>
+
+<input type="date" id="tanggal">
+
+</div>
+
+<button class="btn" onclick="render()">
+Tampilkan
+</button>
+
+</div>
+
+<div class="stats">
+
+<div class="stat gold">
+<small>OMZET</small>
+<h2 id="omzet">Rp0</h2>
+</div>
+
+<div class="stat">
+<small>PELANGGAN</small>
+<h2 id="pelanggan">0</h2>
+</div>
+
+<div class="stat">
+<small>TRANSAKSI SELESAI</small>
+<h2 id="transaksi">0</h2>
+</div>
+
+<div class="stat">
+<small>RATA-RATA</small>
+<h2 id="rata">Rp0</h2>
+</div>
+
+</div>
+
+<div class="grid">
+
+<div class="card">
+
+<h2>Layanan Terjual</h2>
+
+<div id="services"></div>
+
+</div>
+
+<div class="card">
+
+<h2>Customer</h2>
+
+<div id="customerInfo"></div>
+
+</div>
+
+<div class="card" style="grid-column:1/-1">
+
+<h2>Riwayat Transaksi</h2>
+
+<div class="table-wrap">
+
+<table>
+
+<thead>
+
+<tr>
+<th>TANGGAL</th>
+<th>NO</th>
+<th>NAMA</th>
+<th>LAYANAN</th>
+<th>JENIS</th>
+<th>STATUS</th>
+<th>HARGA</th>
+</tr>
+
+</thead>
+
+<tbody id="transactions"></tbody>
+
+</table>
+
+</div>
+
+</div>
+
+</div>
+
+</main>
+
+<script>
+
+let data=[];
+
+try{
+data=JSON.parse(localStorage.getItem("barberData")||"[]");
+if(!Array.isArray(data)) data=[];
+}catch(e){
+data=[];
+}
+
+function today(){
+
+const d=new Date();
+
+return d.getFullYear()+"-"+
+String(d.getMonth()+1).padStart(2,"0")+"-"+
+String(d.getDate()).padStart(2,"0");
+
+}
+
+function dateObj(date){
+
+const p=String(date).split("-");
+
+return new Date(
+Number(p[0]),
+Number(p[1])-1,
+Number(p[2])
+);
+
+}
+
+function formatDate(d){
+
+return d.getFullYear()+"-"+
+String(d.getMonth()+1).padStart(2,"0")+"-"+
+String(d.getDate()).padStart(2,"0");
+
+}
+
+function formatTanggal(tanggal){
+
+if(!tanggal) return "-";
+
+const p=String(tanggal).split("-");
+
+if(p.length!==3) return String(tanggal);
+
+const bulan=[
+"Januari","Februari","Maret","April","Mei","Juni",
+"Juli","Agustus","September","Oktober","November","Desember"
+];
+
+return Number(p[2])+" "+bulan[Number(p[1])-1]+" "+p[0];
+
+}
+
+function norm(hp){
+
+let x=String(hp||"").replace(/\D/g,"");
+
+if(x.startsWith("62")){
+x="0"+x.substring(2);
+}
+
+return x;
+
+}
+
+function rupiah(n){
+
+return new Intl.NumberFormat("id-ID",{
+style:"currency",
+currency:"IDR",
+maximumFractionDigits:0
+}).format(Number(n)||0);
+
+}
+
+function escapeHTML(value){
+
+return String(value??"")
+.replace(/&/g,"&amp;")
+.replace(/</g,"&lt;")
+.replace(/>/g,"&gt;")
+.replace(/"/g,"&quot;")
+.replace(/'/g,"&#039;");
+
+}
+
+function clock(){
+
+document.getElementById("clock").textContent=
+new Date().toLocaleTimeString("id-ID",{
+hour:"2-digit",
+minute:"2-digit",
+second:"2-digit"
+});
+
+}
+
+setInterval(clock,1000);
+clock();
+
+function getRange(){
+
+const mode=
+document.getElementById("periode").value;
+
+const now=dateObj(today());
+
+if(mode==="hari"){
+return [today(),today()];
+}
+
+if(mode==="kemarin"){
+
+const d=new Date(now);
+
+d.setDate(d.getDate()-1);
+
+const x=formatDate(d);
+
+return [x,x];
+
+}
+
+if(mode==="minggu"){
+
+const start=new Date(now);
+
+start.setDate(start.getDate()-6);
+
+return [
+formatDate(start),
+today()
+];
+
+}
+
+if(mode==="bulan"){
+
+const start=
+new Date(
+now.getFullYear(),
+now.getMonth(),
+1
+);
+
+return [
+formatDate(start),
+today()
+];
+
+}
+
+if(mode==="custom"){
+
+const x=
+document.getElementById("tanggal").value||
+today();
+
+return [x,x];
+
+}
+
+return [
+"0000-01-01",
+"9999-12-31"
+];
+
+}
+
+function ubahPeriode(){
+
+const custom=
+document.getElementById("periode").value==="custom";
+
+document.getElementById("tanggal").disabled=!custom;
+
+render();
+
+}
+
+function render(){
+
+const [start,end]=getRange();
+
+const filtered=
+data.filter(x=>
+String(x.tanggal)>=start&&
+String(x.tanggal)<=end
+);
+
+const selesai=
+filtered.filter(x=>x.status==="Selesai");
+
+const omzet=
+selesai.reduce(
+(a,b)=>a+Number(b.harga||0),
+0
+);
+
+const uniquePhones=
+new Set(
+filtered
+.map(x=>norm(x.hp))
+.filter(Boolean)
+);
+
+document.getElementById("omzet").textContent=
+rupiah(omzet);
+
+document.getElementById("pelanggan").textContent=
+uniquePhones.size;
+
+document.getElementById("transaksi").textContent=
+selesai.length;
+
+document.getElementById("rata").textContent=
+rupiah(
+selesai.length?
+omzet/selesai.length:
+0
+);
+
+const services={};
+
+selesai.forEach(x=>{
+
+services[x.layanan]=
+(services[x.layanan]||0)+1;
+
+});
+
+const serviceSorted=
+Object.entries(services)
+.sort((a,b)=>b[1]-a[1]);
+
+document.getElementById("services").innerHTML=
+serviceSorted.length?
+
+serviceSorted.map(x=>
+'<div class="service-row">'+
+'<span>'+escapeHTML(x[0])+'</span>'+
+'<strong>'+x[1]+'x</strong>'+
+'</div>'
+).join(""):
+
+'<div class="empty">Belum ada transaksi selesai.</div>';
+
+let baru=0;
+let lama=0;
+
+[...uniquePhones].forEach(phone=>{
+
+const semua=
+data.filter(x=>norm(x.hp)===phone);
+
+if(semua.length<=1){
+baru++;
+}else{
+lama++;
+}
+
+});
+
+document.getElementById("customerInfo").innerHTML=
+'<div class="service-row">'+
+'<span>Customer unik</span>'+
+'<strong>'+uniquePhones.size+'</strong>'+
+'</div>'+
+
+'<div class="service-row">'+
+'<span>Customer baru</span>'+
+'<strong>'+baru+'</strong>'+
+'</div>'+
+
+'<div class="service-row">'+
+'<span>Customer lama</span>'+
+'<strong>'+lama+'</strong>'+
+'</div>';
+
+const transactions=
+[...filtered].sort((a,b)=>
+String(b.tanggal).localeCompare(String(a.tanggal))||
+Number(b.id||0)-Number(a.id||0)
+);
+
+document.getElementById("transactions").innerHTML=
+transactions.length?
+
+transactions.map(x=>
+'<tr>'+
+'<td>'+escapeHTML(formatTanggal(x.tanggal))+'</td>'+
+'<td>'+escapeHTML(x.nomorAntrean)+'</td>'+
+'<td>'+escapeHTML(x.nama)+'</td>'+
+'<td>'+escapeHTML(x.layanan)+'</td>'+
+'<td>'+escapeHTML(x.jenis)+'</td>'+
+'<td>'+escapeHTML(x.status)+'</td>'+
+'<td>'+rupiah(x.harga)+'</td>'+
+'</tr>'
+).join(""):
+
+'<tr><td colspan="7">'+
+'<div class="empty">Tidak ada data pada periode ini.</div>'+
+'</td></tr>';
+
+}
+
+document.getElementById("tanggal").value=today();
+
+document.getElementById("tanggal").disabled=true;
+
+render();
+
+</script>
+
+</body>
+</html>
