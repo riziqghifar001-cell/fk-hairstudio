@@ -1699,6 +1699,18 @@ footer{
     }
 
 }</style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script id="fk-supabase-config">
+const FK_SUPABASE_URL = "https://udqjramwhlptobfsmepx.supabase.co";
+const FK_SUPABASE_KEY = "sb_publishable_vTNsdoG9reqGF8vdgoN-Tw_z4R_h4Yw";
+
+const FKDB = window.supabase.createClient(
+    FK_SUPABASE_URL,
+    FK_SUPABASE_KEY
+);
+
+const FK_ADMIN_WA = "628879800000";
+</script>
 </head>
 
 <body>
@@ -1969,7 +1981,7 @@ footer{
 
             <div class="service-card">
                 <div>
-                    <h3>HAIR TATTOOO</h3>
+                    <h3>HAIR TATTOO</h3>
                     <p>
                         Detail atau pola pada rambut untuk menambahkan
                         karakter pada gaya rambut.
@@ -2331,7 +2343,7 @@ footer{
 
                     <div class="info-line">
                         <small>DATA</small>
-                        <strong>Nomor antrean tersimpan di browser perangkat ini</strong>
+                        <strong>Data booking tersimpan aman di sistem FK.</strong>
                     </div>
 
                 </div>
@@ -2363,8 +2375,8 @@ footer{
                             HAIRCUT PLATINUM — Rp50.000
                         </option>
 
-                        <option value="HAIR TATTOOO|50000">
-                            HAIR TATTOOO — Rp50.000
+                        <option value="HAIR TATTOO|50000">
+                            HAIR TATTOO — Rp50.000
                         </option>
 
                         <option value="HEAD SHAVE|60000">
@@ -2553,7 +2565,7 @@ footer{
                 <div id="hasil"></div>
 
                 <div class="notice">
-                    Prototype saat ini menyimpan data di browser perangkat ini.
+                    Booking tersimpan di sistem FK dan dapat diproses oleh admin.
                 </div>
 
             </div>
@@ -3969,8 +3981,906 @@ window.addEventListener(
 
 </script>
 
+<script id="fk-supabase-migration">
+
+/* ==================================================
+   FK HAIRSTUDIO - SUPABASE CUSTOMER SYSTEM
+================================================== */
+
+const FK_BOOKING_SLOTS = [
+    "10:00",
+    "10:30",
+    "11:00",
+    "11:30",
+    "13:00",
+    "13:30",
+    "14:00",
+    "14:30",
+    "15:00",
+    "15:30",
+    "16:00",
+    "16:30",
+    "17:00",
+    "17:30",
+    "18:00",
+    "18:30",
+    "19:00",
+    "19:30",
+    "20:00"
+];
+
+let fkSelectedJam = "";
+let fkCurrentBooking = null;
+
+function fkToday(){
+
+    const d = new Date();
+
+    return d.getFullYear() + "-" +
+        String(d.getMonth()+1).padStart(2,"0") + "-" +
+        String(d.getDate()).padStart(2,"0");
+}
+
+function fkNormHP(hp){
+
+    let x = String(hp || "").replace(/\D/g,"");
+
+    if(x.startsWith("62")){
+        x = "0" + x.substring(2);
+    }
+
+    return x;
+}
+
+function fkRupiah(n){
+
+    return new Intl.NumberFormat("id-ID",{
+        style:"currency",
+        currency:"IDR",
+        maximumFractionDigits:0
+    }).format(Number(n) || 0);
+}
+
+function fkEscape(value){
+
+    return String(value ?? "")
+        .replace(/&/g,"&amp;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;")
+        .replace(/'/g,"&#039;");
+}
+
+function fkFormatTanggal(tanggal){
+
+    if(!tanggal) return "-";
+
+    const p = String(tanggal).split("-");
+
+    if(p.length !== 3) return tanggal;
+
+    const bulan = [
+        "Januari","Februari","Maret","April","Mei","Juni",
+        "Juli","Agustus","September","Oktober","November","Desember"
+    ];
+
+    return Number(p[2]) + " " +
+        bulan[Number(p[1])-1] + " " +
+        p[0];
+}
+
+/* -----------------------------------------------
+   SERVICE / TYPE
+------------------------------------------------ */
+
+function getJenis(){
+
+    const radio =
+        document.querySelector(
+            'input[name="visitType"]:checked'
+        );
+
+    return radio ? radio.value : "Walk-in";
+}
+
+/* -----------------------------------------------
+   CUSTOMER CHECK
+------------------------------------------------ */
+
+let fkCustomerTimer = null;
+
+async function cekPelanggan(){
+
+    clearTimeout(fkCustomerTimer);
+
+    fkCustomerTimer = setTimeout(async function(){
+
+        const input = document.getElementById("hp");
+
+        if(!input) return;
+
+        const hp = fkNormHP(input.value);
+
+        const info = document.getElementById("customerInfo");
+
+        if(!info || hp.length < 8){
+
+            if(info) info.style.display = "none";
+
+            return;
+        }
+
+        const {data,error} =
+            await FKDB.rpc(
+                "get_booking_status",
+                {
+                    p_nomor_antrean: "___",
+                    p_hp: hp
+                }
+            );
+
+        /*
+          RPC status sengaja tidak dipakai untuk history penuh.
+          Customer-facing tidak membuka data pelanggan lain.
+        */
+
+        info.style.display = "block";
+
+        document.getElementById("customerText").textContent =
+            "Data siap digunakan.";
+
+        document.getElementById("customerHistory").textContent =
+            "Nomor WhatsApp akan digunakan untuk riwayat kunjungan.";
+
+    },250);
+}
+
+/* -----------------------------------------------
+   BOOKING FORM
+------------------------------------------------ */
+
+function updateBookingForm(){
+
+    const box =
+        document.getElementById("bookingSchedule");
+
+    if(!box) return;
+
+    if(getJenis() === "Booking"){
+
+        box.classList.add("show");
+
+        renderSlots();
+
+    }else{
+
+        box.classList.remove("show");
+
+        fkSelectedJam = "";
+    }
+
+    updateSteps();
+}
+
+/* -----------------------------------------------
+   SLOT
+------------------------------------------------ */
+
+async function renderSlots(){
+
+    const grid =
+        document.getElementById("slotGrid");
+
+    const info =
+        document.getElementById("slotInfo");
+
+    const dateInput =
+        document.getElementById("tanggalBooking");
+
+    if(!grid || !info || !dateInput) return;
+
+    const tanggal = dateInput.value;
+
+    grid.innerHTML = "";
+    fkSelectedJam = "";
+
+    if(!tanggal){
+
+        info.textContent =
+            "Pilih tanggal terlebih dahulu.";
+
+        info.className = "slot-info";
+
+        return;
+    }
+
+    if(tanggal < fkToday()){
+
+        info.textContent =
+            "Tanggal tidak boleh sebelum hari ini.";
+
+        info.className = "slot-info full";
+
+        return;
+    }
+
+    let booked = [];
+
+    try{
+
+        const {data,error} =
+            await FKDB.rpc(
+                "get_booked_slots",
+                {
+                    p_tanggal: tanggal
+                }
+            );
+
+        if(!error && Array.isArray(data)){
+
+            booked = data.map(function(x){
+
+                if(typeof x === "string"){
+                    return x.substring(0,5);
+                }
+
+                return String(
+                    x.jam_booking ||
+                    x.jam ||
+                    x.jamBooking ||
+                    ""
+                ).substring(0,5);
+
+            });
+
+        }
+
+    }catch(e){
+
+        console.error(e);
+
+    }
+
+    FK_BOOKING_SLOTS.forEach(function(jam){
+
+        const button =
+            document.createElement("button");
+
+        button.type = "button";
+        button.className = "slot-btn";
+        button.textContent = jam;
+
+        let disabled = booked.includes(jam);
+
+        if(tanggal === fkToday()){
+
+            const now = new Date();
+
+            const current =
+                now.getHours() * 60 +
+                now.getMinutes();
+
+            const p = jam.split(":");
+
+            const slot =
+                Number(p[0]) * 60 +
+                Number(p[1]);
+
+            if(slot <= current){
+                disabled = true;
+            }
+        }
+
+        button.disabled = disabled;
+
+        if(!disabled){
+
+            button.onclick = function(){
+
+                document
+                    .querySelectorAll(".slot-btn")
+                    .forEach(function(x){
+                        x.classList.remove("selected");
+                    });
+
+                button.classList.add("selected");
+
+                fkSelectedJam = jam;
+
+                info.textContent =
+                    "Slot " + jam + " tersedia.";
+
+                info.className =
+                    "slot-info available";
+
+                updateSteps();
+            };
+        }
+
+        grid.appendChild(button);
+
+    });
+
+    const tersedia =
+        grid.querySelectorAll(
+            ".slot-btn:not(:disabled)"
+        ).length;
+
+    if(tersedia === 0){
+
+        info.textContent =
+            "Tidak ada slot tersedia pada tanggal ini.";
+
+        info.className = "slot-info full";
+
+    }else{
+
+        info.textContent =
+            tersedia + " slot masih tersedia.";
+
+        info.className =
+            "slot-info available";
+    }
+}
+
+/* -----------------------------------------------
+   STEP
+------------------------------------------------ */
+
+function updateSteps(){
+
+    const hp =
+        document.getElementById("hp")?.value.trim();
+
+    const nama =
+        document.getElementById("nama")?.value.trim();
+
+    const jenis = getJenis();
+
+    document
+        .querySelectorAll(".step")
+        .forEach(function(x){
+            x.classList.remove("active");
+        });
+
+    document
+        .getElementById("step1")
+        ?.classList.add("active");
+
+    if(jenis){
+
+        document
+            .getElementById("step2")
+            ?.classList.add("active");
+    }
+
+    if(
+        jenis === "Walk-in" ||
+        fkSelectedJam
+    ){
+
+        document
+            .getElementById("step3")
+            ?.classList.add("active");
+    }
+
+    if(hp && nama){
+
+        document
+            .getElementById("step4")
+            ?.classList.add("active");
+    }
+}
+
+/* -----------------------------------------------
+   BOOKING
+------------------------------------------------ */
+
+async function ambilAntrean(){
+
+    const hpRaw =
+        document.getElementById("hp")?.value.trim();
+
+    const nama =
+        document.getElementById("nama")?.value.trim();
+
+    const service =
+        document.getElementById("layananSelect")?.value.split("|");
+
+    const jenis = getJenis();
+
+    if(!hpRaw){
+
+        alert(
+            "Masukkan nomor WhatsApp terlebih dahulu."
+        );
+
+        return;
+    }
+
+    const hp = fkNormHP(hpRaw);
+
+    if(hp.length < 8){
+
+        alert(
+            "Nomor WhatsApp tidak valid."
+        );
+
+        return;
+    }
+
+    if(!nama){
+
+        alert(
+            "Nama pelanggan belum diisi."
+        );
+
+        return;
+    }
+
+    if(!service || !service[0]){
+
+        alert(
+            "Silakan pilih layanan."
+        );
+
+        return;
+    }
+
+    let tanggal = fkToday();
+    let jamBooking = null;
+
+    if(jenis === "Booking"){
+
+        tanggal =
+            document.getElementById(
+                "tanggalBooking"
+            )?.value;
+
+        jamBooking = fkSelectedJam;
+
+        if(!tanggal){
+
+            alert(
+                "Silakan pilih tanggal booking."
+            );
+
+            return;
+        }
+
+        if(!jamBooking){
+
+            alert(
+                "Silakan pilih salah satu jam yang tersedia."
+            );
+
+            return;
+        }
+    }
+
+    const harga = Number(service[1]) || 0;
+
+    const submit =
+        document.getElementById("submitText");
+
+    if(submit){
+
+        submit.textContent =
+            "MENYIMPAN...";
+    }
+
+    try{
+
+        const {data,error} =
+            await FKDB.rpc(
+                "create_booking",
+                {
+                    p_nama: nama,
+                    p_hp: hp,
+                    p_layanan: service[0],
+                    p_harga: harga,
+                    p_jenis: jenis,
+                    p_tanggal: tanggal,
+                    p_jam_booking: jamBooking
+                }
+            );
+
+        if(error){
+
+            console.error(error);
+
+            const message =
+                String(error.message || "");
+
+            if(
+                message.toLowerCase().includes("slot") ||
+                message.toLowerCase().includes("unique")
+            ){
+
+                alert(
+                    "Maaf, slot tersebut baru saja diambil. Silakan pilih slot lain."
+                );
+
+                renderSlots();
+
+            }else{
+
+                alert(
+                    "Booking gagal disimpan.\n\n" +
+                    message
+                );
+            }
+
+            return;
+        }
+
+        const result =
+            Array.isArray(data)
+                ? data[0]
+                : data;
+
+        const nomor =
+            result?.nomor_antrean ||
+            result?.nomorAntrean;
+
+        fkCurrentBooking = {
+
+            nomorAntrean: nomor,
+            nama: nama,
+            hp: hp,
+            layanan: service[0],
+            harga: harga,
+            jenis: jenis,
+            tanggal: tanggal,
+            jamBooking: jamBooking
+        };
+
+        const hasil =
+            document.getElementById("hasil");
+
+        if(hasil){
+
+            hasil.style.display = "block";
+
+            hasil.innerHTML =
+                '<div class="result-success">' +
+                '✓ BERHASIL DISIMPAN' +
+                '</div>' +
+
+                '<div class="result-label">' +
+                (
+                    jenis === "Booking"
+                    ? "BOOKING ANDA"
+                    : "NOMOR ANTREAN ANDA"
+                ) +
+                '</div>' +
+
+                '<div class="queue-number">' +
+                fkEscape(nomor) +
+                '</div>' +
+
+                '<div class="result-detail">' +
+                "Sampai jumpa, " +
+                fkEscape(nama) +
+                "</div>" +
+
+                '<div class="result-ticket">' +
+
+                '<div class="ticket-item">' +
+                '<small>LAYANAN</small>' +
+                '<strong>' +
+                fkEscape(service[0]) +
+                '</strong>' +
+                '</div>' +
+
+                '<div class="ticket-item">' +
+                '<small>HARGA</small>' +
+                '<strong>' +
+                fkRupiah(harga) +
+                '</strong>' +
+                '</div>' +
+
+                '<div class="ticket-item">' +
+                '<small>TANGGAL</small>' +
+                '<strong>' +
+                fkEscape(
+                    fkFormatTanggal(tanggal)
+                ) +
+                '</strong>' +
+                '</div>' +
+
+                '<div class="ticket-item">' +
+                '<small>' +
+                (
+                    jenis === "Booking"
+                    ? "JAM BOOKING"
+                    : "JENIS"
+                ) +
+                '</small>' +
+
+                '<strong>' +
+                fkEscape(
+                    jenis === "Booking"
+                    ? jamBooking
+                    : "Walk-in"
+                ) +
+                '</strong>' +
+
+                '</div>' +
+
+                '</div>' +
+
+                '<div class="result-actions">' +
+
+                '<button class="btn-wa" onclick="kirimWhatsApp()">' +
+                'KONFIRMASI WHATSAPP' +
+                '</button>' +
+
+                '<button class="btn-reset" onclick="resetForm()">' +
+                'SELESAI' +
+                '</button>' +
+
+                '</div>';
+
+            hasil.scrollIntoView({
+                behavior:"smooth",
+                block:"center"
+            });
+        }
+
+        document.getElementById("hp").value = "";
+        document.getElementById("nama").value = "";
+
+        const customerInfo =
+            document.getElementById("customerInfo");
+
+        if(customerInfo){
+            customerInfo.style.display = "none";
+        }
+
+        if(jenis === "Booking"){
+
+            const tanggalInput =
+                document.getElementById("tanggalBooking");
+
+            if(tanggalInput){
+                tanggalInput.value = "";
+            }
+
+            fkSelectedJam = "";
+
+            document
+                .getElementById("bookingSchedule")
+                ?.classList.remove("show");
+
+            const walkin =
+                document.getElementById("walkin");
+
+            if(walkin){
+                walkin.checked = true;
+            }
+        }
+
+    }catch(e){
+
+        console.error(e);
+
+        alert(
+            "Terjadi kesalahan saat menghubungkan ke server."
+        );
+
+    }finally{
+
+        if(submit){
+
+            submit.textContent =
+                "AMBIL ANTREAN";
+        }
+    }
+}
+
+/* -----------------------------------------------
+   WHATSAPP
+------------------------------------------------ */
+
+function kirimWhatsApp(){
+
+    const x = fkCurrentBooking;
+
+    if(!x) return;
+
+    const pesan =
+        "Halo FK Hairstudio, saya sudah mengambil antrean.%0A" +
+        "Nama: " +
+        encodeURIComponent(x.nama) +
+        "%0A" +
+        "No. Antrean: " +
+        encodeURIComponent(x.nomorAntrean) +
+        "%0A" +
+        "Layanan: " +
+        encodeURIComponent(x.layanan) +
+        "%0ATanggal: " +
+        encodeURIComponent(
+            fkFormatTanggal(x.tanggal)
+        ) +
+        (
+            x.jamBooking
+            ? "%0AJam: " +
+              encodeURIComponent(x.jamBooking)
+            : ""
+        );
+
+    window.open(
+        "https://wa.me/" +
+        FK_ADMIN_WA +
+        "?text=" +
+        pesan,
+        "_blank"
+    );
+}
+
+/* -----------------------------------------------
+   RESET
+------------------------------------------------ */
+
+function resetForm(){
+
+    const hasil =
+        document.getElementById("hasil");
+
+    if(hasil){
+        hasil.style.display = "none";
+        hasil.innerHTML = "";
+    }
+
+    fkCurrentBooking = null;
+}
+
+/* -----------------------------------------------
+   FAQ
+------------------------------------------------ */
+
+function toggleFaq(button){
+
+    if(!button) return;
+
+    const item =
+        button.closest(".faq-item");
+
+    if(!item) return;
+
+    item.classList.toggle("open");
+
+    const answer =
+        item.querySelector(".faq-answer");
+
+    if(answer){
+
+        answer.style.display =
+            item.classList.contains("open")
+            ? "block"
+            : "";
+    }
+}
+
+/* -----------------------------------------------
+   KEEP EXISTING UI HELPERS
+------------------------------------------------ */
+
+if(typeof showService !== "function"){
+
+    window.showService = function(){};
+
+}
+
+if(typeof recommend !== "function"){
+
+    window.recommend = function(){};
+
+}
+
+if(typeof pilihRekomendasi !== "function"){
+
+    window.pilihRekomendasi = function(){};
+
+}
+
+/* -----------------------------------------------
+   CUSTOMER STATUS CHECK
+   Customer memakai nomor antrean + HP.
+------------------------------------------------ */
+
+window.cekStatusAntrean = async function(){
+
+    const nomor =
+        prompt("Masukkan nomor antrean, contoh A-001");
+
+    if(!nomor) return;
+
+    const hp =
+        prompt("Masukkan nomor WhatsApp");
+
+    if(!hp) return;
+
+    const {data,error} =
+        await FKDB.rpc(
+            "get_booking_status",
+            {
+                p_nomor_antrean: nomor.trim(),
+                p_hp: fkNormHP(hp)
+            }
+        );
+
+    if(error || !data || !data.length){
+
+        alert(
+            "Data antrean tidak ditemukan."
+        );
+
+        return;
+    }
+
+    const x = data[0];
+
+    alert(
+        "Antrean: " + x.nomor_antrean +
+        "\nNama: " + x.nama +
+        "\nLayanan: " + x.layanan +
+        "\nTanggal: " + x.tanggal +
+        "\nStatus: " + x.status
+    );
+};
+
+/* -----------------------------------------------
+   INITIAL
+------------------------------------------------ */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function(){
+
+        const typoElements =
+            document.querySelectorAll("*");
+
+        document
+            .querySelectorAll("option")
+            .forEach(function(option){
+
+                option.textContent =
+                    option.textContent
+                        .replace(
+                            /HAIR TATTOO/g,
+                            "HAIR TATTOO"
+                        )
+                        .replace(
+                            /CORNROW/g,
+                            "CORNROW"
+                        );
+            });
+
+        const dataTexts =
+            document.body.innerHTML;
+
+        document.body.innerHTML =
+            dataTexts
+                .replace(
+                    /Data booking tersimpan aman di sistem FK./g,
+                    "Data booking tersimpan aman di sistem FK."
+                )
+                .replace(
+                    /Prototype saat ini menyimpan data di browser perangkat ini\./g,
+                    "Booking tersimpan di sistem FK dan dapat diproses oleh admin."
+                );
+
+        updateSteps();
+    }
+);
+
+</script>
 </body>
 </html>
+
+
 
 
 

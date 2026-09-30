@@ -315,6 +315,18 @@ grid-template-columns:1fr
 }
 }
 </style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script id="fk-supabase-config">
+const FK_SUPABASE_URL = "https://udqjramwhlptobfsmepx.supabase.co";
+const FK_SUPABASE_KEY = "sb_publishable_vTNsdoG9reqGF8vdgoN-Tw_z4R_h4Yw";
+
+const FKDB = window.supabase.createClient(
+    FK_SUPABASE_URL,
+    FK_SUPABASE_KEY
+);
+
+const FK_ADMIN_WA = "628879800000";
+</script>
 </head>
 
 <body>
@@ -768,5 +780,527 @@ render();
 
 </script>
 
+<script id="fk-supabase-migration">
+
+let fkCustomers=[];
+let fkSelectedPhone=null;
+
+function fkNorm(hp){
+
+    let x=String(hp||"").replace(/\D/g,"");
+
+    if(x.startsWith("62"))
+        x="0"+x.substring(2);
+
+    return x;
+}
+
+function fkRupiah(n){
+
+    return new Intl.NumberFormat("id-ID",{
+        style:"currency",
+        currency:"IDR",
+        maximumFractionDigits:0
+    }).format(Number(n)||0);
+}
+
+function fkEscape(v){
+
+    return String(v??"")
+        .replace(/&/g,"&amp;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;")
+        .replace(/'/g,"&#039;");
+}
+
+function fkFormatTanggal(t){
+
+    if(!t) return "-";
+
+    const p=String(t).split("-");
+
+    if(p.length!==3) return t;
+
+    const bulan=[
+        "Januari","Februari","Maret","April","Mei","Juni",
+        "Juli","Agustus","September","Oktober","November","Desember"
+    ];
+
+    return Number(p[2])+" "+
+        bulan[Number(p[1])-1]+" "+p[0];
+}
+
+function fkShowLogin(){
+
+    if(document.getElementById("fkAdminLogin"))
+        return;
+
+    const style=document.createElement("style");
+
+    style.textContent=
+        #fkAdminLogin{
+            position:fixed;
+            inset:0;
+            z-index:99999;
+            background:#0b0b0d;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            padding:20px
+        }
+
+        #fkAdminLogin .box{
+            width:100%;
+            max-width:390px;
+            background:#151518;
+            border:1px solid #29292e;
+            border-radius:14px;
+            padding:28px
+        }
+
+        #fkAdminLogin h2{
+            margin-bottom:7px
+        }
+
+        #fkAdminLogin p{
+            color:#777;
+            font-size:12px;
+            margin-bottom:22px
+        }
+
+        #fkAdminLogin input{
+            width:100%;
+            padding:12px;
+            margin-bottom:10px;
+            background:#0c0c0e;
+            border:1px solid #333;
+            color:#fff;
+            border-radius:7px
+        }
+
+        #fkAdminLogin button{
+            width:100%;
+            padding:12px;
+            border:0;
+            border-radius:7px;
+            background:#d4af37;
+            color:#111;
+            font-weight:800
+        }
+
+        #fkAdminError{
+            color:#ef6262;
+            font-size:11px;
+            margin-top:12px
+        }
+    ;
+
+    document.head.appendChild(style);
+
+    const box=document.createElement("div");
+
+    box.id="fkAdminLogin";
+
+    box.innerHTML=
+        <div class="box">
+            <h2>FK ADMIN</h2>
+            <p>Login untuk mengakses data pelanggan.</p>
+
+            <input id="fkAdminEmail" type="email" placeholder="Email admin">
+            <input id="fkAdminPassword" type="password" placeholder="Password">
+
+            <button onclick="fkLogin()">LOGIN</button>
+
+            <div id="fkAdminError"></div>
+        </div>
+    ;
+
+    document.body.appendChild(box);
+}
+
+async function fkLogin(){
+
+    const email =
+        document.getElementById("fkAdminEmail").value.trim();
+
+    const password =
+        document.getElementById("fkAdminPassword").value;
+
+    const {error} =
+        await FKDB.auth.signInWithPassword({
+            email:email,
+            password:password
+        });
+
+    if(error){
+
+        document.getElementById("fkAdminError").textContent =
+            "Login gagal: "+error.message;
+
+        return;
+    }
+
+    document
+        .getElementById("fkAdminLogin")
+        ?.remove();
+
+    await fkLoadCustomers();
+}
+
+async function fkLoadCustomers(){
+
+    const {data,error} =
+        await FKDB
+            .from("bookings")
+            .select("*")
+            .order("dibuat_pada",{ascending:false});
+
+    if(error){
+
+        alert(
+            "Gagal membaca pelanggan:\n"+
+            error.message
+        );
+
+        return;
+    }
+
+    fkCustomers=data||[];
+
+    fkRenderCustomers();
+}
+
+function fkRenderCustomers(){
+
+    const grouped={};
+
+    fkCustomers.forEach(function(x){
+
+        const phone=fkNorm(x.hp);
+
+        if(!phone) return;
+
+        if(!grouped[phone])
+            grouped[phone]=[];
+
+        grouped[phone].push(x);
+    });
+
+    const search =
+        document.getElementById("search")
+            ?.value
+            .toLowerCase()
+            .trim() || "";
+
+    const list =
+        Object.entries(grouped)
+            .filter(function(entry){
+
+                const phone=entry[0];
+                const records=entry[1];
+
+                const name =
+                    String(
+                        records[0]?.nama || ""
+                    ).toLowerCase();
+
+                return (
+                    !search ||
+                    phone.includes(
+                        search.replace(/\D/g,"")
+                    ) ||
+                    name.includes(search)
+                );
+            })
+            .sort(function(a,b){
+
+                return String(
+                    b[1][0]?.dibuat_pada || ""
+                ).localeCompare(
+                    String(
+                        a[1][0]?.dibuat_pada || ""
+                    )
+                );
+            });
+
+    const grid =
+        document.getElementById(
+            "customerGrid"
+        );
+
+    if(!grid) return;
+
+    if(!list.length){
+
+        grid.innerHTML =
+            '<div class="empty">' +
+            'Belum ada data pelanggan.' +
+            '</div>';
+
+        return;
+    }
+
+    grid.innerHTML =
+        list.map(function(entry){
+
+            const phone=entry[0];
+            const records=entry[1];
+
+            const selesai =
+                records.filter(
+                    x=>x.status==="Selesai"
+                );
+
+            const spend =
+                selesai.reduce(
+                    (a,b)=>
+                        a+Number(b.harga||0),
+                    0
+                );
+
+            return (
+                '<div class="customer-card" ' +
+                'onclick="fkOpenCustomer(\''+
+                phone+
+                '\')">' +
+
+                '<div class="customer-name">' +
+                fkEscape(
+                    records[0]?.nama || "-"
+                ) +
+                '</div>' +
+
+                '<div class="customer-phone">' +
+                fkEscape(phone) +
+                '</div>' +
+
+                '<div class="customer-meta">' +
+                records.length+
+                ' kunjungan • '+
+                fkRupiah(spend) +
+                '</div>' +
+
+                '</div>'
+            );
+
+        }).join("");
+}
+
+function fkOpenCustomer(phone){
+
+    fkSelectedPhone=phone;
+
+    const records =
+        fkCustomers
+            .filter(
+                x=>fkNorm(x.hp)===phone
+            )
+            .sort(function(a,b){
+
+                return String(
+                    b.dibuat_pada||""
+                ).localeCompare(
+                    String(a.dibuat_pada||"")
+                );
+            });
+
+    const selesai =
+        records.filter(
+            x=>x.status==="Selesai"
+        );
+
+    document.getElementById("detailName").textContent =
+        records[0]?.nama || "-";
+
+    document.getElementById("detailPhone").textContent =
+        phone;
+
+    document.getElementById("detailVisits").textContent =
+        selesai.length+"x";
+
+    document.getElementById("detailSpend").textContent =
+        fkRupiah(
+            selesai.reduce(
+                (a,b)=>a+Number(b.harga||0),0
+            )
+        );
+
+    document.getElementById("editName").value =
+        records[0]?.nama || "";
+
+    document.getElementById("editPhone").value =
+        phone;
+
+    document.getElementById("history").innerHTML =
+        records.map(function(x){
+
+            return (
+                '<div class="history-item">' +
+
+                '<div>' +
+
+                '<strong>'+
+                fkEscape(x.layanan)+
+                '</strong>' +
+
+                '<div class="history-meta">' +
+                fkEscape(
+                    fkFormatTanggal(x.tanggal)
+                ) +
+
+                (
+                    x.jam_booking
+                    ? " • "+
+                      fkEscape(
+                        String(x.jam_booking)
+                            .substring(0,5)
+                      )
+                    : ""
+                ) +
+
+                " • "+
+                fkEscape(x.status) +
+
+                '</div>' +
+
+                '</div>' +
+
+                '<strong>'+
+                fkRupiah(x.harga)+
+                '</strong>' +
+
+                '</div>'
+            );
+
+        }).join("");
+
+    document
+        .getElementById("modal")
+        .classList.add("show");
+}
+
+function closeModal(){
+
+    document
+        .getElementById("modal")
+        .classList.remove("show");
+
+    fkSelectedPhone=null;
+}
+
+async function saveCustomer(){
+
+    if(!fkSelectedPhone) return;
+
+    const name =
+        document.getElementById("editName")
+            .value.trim();
+
+    const phone =
+        fkNorm(
+            document.getElementById("editPhone")
+                .value
+        );
+
+    if(!name || phone.length<8){
+
+        alert(
+            "Nama atau nomor HP tidak valid."
+        );
+
+        return;
+    }
+
+    const {error} =
+        await FKDB
+            .from("bookings")
+            .update({
+                nama:name,
+                hp:phone
+            })
+            .eq("hp",fkSelectedPhone);
+
+    if(error){
+
+        alert(
+            "Gagal menyimpan:\n"+
+            error.message
+        );
+
+        return;
+    }
+
+    closeModal();
+
+    await fkLoadCustomers();
+}
+
+async function deleteCustomer(){
+
+    if(!fkSelectedPhone) return;
+
+    if(!confirm(
+        "Hapus seluruh riwayat pelanggan ini?"
+    )) return;
+
+    /*
+      Untuk keamanan bisnis, penghapusan dilakukan
+      dengan status Batal, bukan menghapus transaksi
+      permanen.
+    */
+
+    const {error} =
+        await FKDB
+            .from("bookings")
+            .update({
+                status:"Batal"
+            })
+            .eq("hp",fkSelectedPhone);
+
+    if(error){
+
+        alert(
+            "Gagal mengubah data:\n"+
+            error.message
+        );
+
+        return;
+    }
+
+    closeModal();
+
+    await fkLoadCustomers();
+}
+
+async function fkStart(){
+
+    const {data,error} =
+        await FKDB.auth.getSession();
+
+    if(error || !data.session){
+
+        fkShowLogin();
+
+        return;
+    }
+
+    await fkLoadCustomers();
+
+    document
+        .getElementById("search")
+        ?.addEventListener(
+            "input",
+            fkRenderCustomers
+        );
+}
+
+document.addEventListener(
+    "DOMContentLoaded",
+    fkStart
+);
+
+</script>
 </body>
 </html>
+

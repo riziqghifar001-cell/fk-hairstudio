@@ -1,0 +1,588 @@
+FK HAIRSTUDIO & BARBERSHOP
+SUPABASE LOCAL CONFIGURATION AUDIT
+Generated : 2026-09-30 22.25.39
+Project   : C:\Users\LENOVO\Downloads\barber-web
+Mode      : READ ONLY
+
+============================================================
+1. PROJECT STRUCTURE
+============================================================
+admin.html | 28027 bytes | 30/09/2026 22.08.14
+AUDIT_PROJECT.txt | 196273 bytes | 30/09/2026 22.21.44
+index.html | 97152 bytes | 30/09/2026 21.09.23
+laporan.html | 21430 bytes | 30/09/2026 21.54.48
+pelanggan.html | 21569 bytes | 30/09/2026 21.09.23
+
+============================================================
+2. SUPABASE SDK / CLIENT REFERENCES
+============================================================
+admin.html:4: <!-- SUPABASE CORE SDK & GLOBAL FKDB INIT -->
+admin.html:5: <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+admin.html:7: window.FK_SUPABASE_URL = "https://udqjramwhlptobfsmepx.supabase.co";
+admin.html:8: window.FK_SUPABASE_KEY = "sb_publishable_vTNsdoG9reqGF8vdgoN-Tw_z4R_h4Yw";
+admin.html:10: window.FKDB = supabase.createClient(window.FK_SUPABASE_URL, window.FK_SUPABASE_KEY);
+admin.html:11: console.log("[SYSTEM] FKDB Global Client berhasil dibuat di window.FKDB");
+admin.html:14: <!-- SUPABASE CORE SDK & GLOBAL FKDB INIT -->
+admin.html:15: <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+admin.html:17: window.FK_SUPABASE_URL = "https://udqjramwhlptobfsmepx.supabase.co";
+admin.html:18: window.FK_SUPABASE_KEY = "sb_publishable_vTNsdoG9reqGF8vdgoN-Tw_z4R_h4Yw";
+admin.html:22: window.FKDB = supabase.createClient(window.FK_SUPABASE_URL, window.FK_SUPABASE_KEY);
+admin.html:23: console.log("[SYSTEM] FKDB Global Client berhasil dibuat.");
+admin.html:26: console.error("[SYSTEM] Gagal inisialisasi FKDB:", e);
+admin.html:386: const FK_SUPABASE_URL = "https://udqjramwhlptobfsmepx.supabase.co";
+admin.html:387: const FK_SUPABASE_KEY = "sb_publishable_vTNsdoG9reqGF8vdgoN-Tw_z4R_h4Yw";
+admin.html:389: window.FKDB = window.supabase.createClient(
+admin.html:390: FK_SUPABASE_URL,
+admin.html:391: FK_SUPABASE_KEY
+admin.html:396: <!-- FKDB Robust Loader -->
+admin.html:397: <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+admin.html:399: (function initFKDB() {
+admin.html:400: const FK_SUPABASE_URL = "https://udqjramwhlptobfsmepx.supabase.co";
+admin.html:401: const FK_SUPABASE_KEY = "sb_publishable_vTNsdoG9reqGF8vdgoN-Tw_z4R_h4Yw";
+admin.html:403: function attachFKDB() {
+admin.html:404: if (window.supabase && window.supabase.createClient) {
+admin.html:405: window.FKDB = window.supabase.createClient(FK_SUPABASE_URL, FK_SUPABASE_KEY);
+admin.html:406: console.log("[FKDB] Initialized successfully as window.FKDB");
+admin.html:408: console.warn("[FKDB] Waiting for Supabase SDK...");
+admin.html:409: setTimeout(attachFKDB, 100);
+admin.html:412: attachFKDB();
+admin.html:1284: await FKDB
+admin.html:1401: await FKDB.auth.getSession();
+admin.html:1421: FKDB
+admin.html:1443: await FKDB.auth.signOut();
+index.html:1702: <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+index.html:1704: const FK_SUPABASE_URL = "https://udqjramwhlptobfsmepx.supabase.co";
+index.html:1705: const FK_SUPABASE_KEY = "sb_publishable_vTNsdoG9reqGF8vdgoN-Tw_z4R_h4Yw";
+index.html:1707: const FKDB = window.supabase.createClient(
+index.html:1708: FK_SUPABASE_URL,
+index.html:1709: FK_SUPABASE_KEY
+index.html:4114: await FKDB.rpc(
+index.html:4212: await FKDB.rpc(
+index.html:4475: await FKDB.rpc(
+index.html:4806: await FKDB.rpc(
+laporan.html:4: <!-- SUPABASE CORE SDK & GLOBAL FKDB INIT -->
+laporan.html:5: <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+laporan.html:7: window.FK_SUPABASE_URL = "https://udqjramwhlptobfsmepx.supabase.co";
+laporan.html:8: window.FK_SUPABASE_KEY = "sb_publishable_vTNsdoG9reqGF8vdgoN-Tw_z4R_h4Yw";
+laporan.html:12: window.FKDB = supabase.createClient(window.FK_SUPABASE_URL, window.FK_SUPABASE_KEY);
+laporan.html:13: console.log("[SYSTEM] FKDB Global Client berhasil dibuat.");
+laporan.html:16: console.error("[SYSTEM] Gagal inisialisasi FKDB:", e);
+laporan.html:256: const FK_SUPABASE_URL = "https://udqjramwhlptobfsmepx.supabase.co";
+laporan.html:257: const FK_SUPABASE_KEY = "sb_publishable_vTNsdoG9reqGF8vdgoN-Tw_z4R_h4Yw";
+laporan.html:259: const FKDB = window.supabase.createClient(
+laporan.html:260: FK_SUPABASE_URL,
+laporan.html:261: FK_SUPABASE_KEY
+laporan.html:266: <!-- Supabase CDN & Global FKDB Fix -->
+laporan.html:269: const FK_SUPABASE_URL = "https://udqjramwhlptobfsmepx.supabase.co";
+laporan.html:270: const FK_SUPABASE_KEY = "sb_publishable_vTNsdoG9reqGF8vdgoN-Tw_z4R_h4Yw";
+laporan.html:271: if (typeof window.supabase !== 'undefined') {
+laporan.html:272: window.FKDB = window.supabase.createClient(FK_SUPABASE_URL, FK_SUPABASE_KEY);
+laporan.html:275: <!-- FKDB Robust Loader -->
+laporan.html:276: <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+laporan.html:278: (function initFKDB() {
+laporan.html:279: const FK_SUPABASE_URL = "https://udqjramwhlptobfsmepx.supabase.co";
+laporan.html:280: const FK_SUPABASE_KEY = "sb_publishable_vTNsdoG9reqGF8vdgoN-Tw_z4R_h4Yw";
+laporan.html:282: function attachFKDB() {
+laporan.html:283: if (window.supabase && window.supabase.createClient) {
+laporan.html:284: window.FKDB = window.supabase.createClient(FK_SUPABASE_URL, FK_SUPABASE_KEY);
+laporan.html:285: console.log("[FKDB] Initialized successfully as window.FKDB");
+laporan.html:287: console.warn("[FKDB] Waiting for Supabase SDK...");
+laporan.html:288: setTimeout(attachFKDB, 100);
+laporan.html:291: attachFKDB();
+laporan.html:883: await FKDB.auth.getSession();
+laporan.html:895: await FKDB
+laporan.html:1162: await FKDB.auth.signInWithPassword({
+laporan.html:1188: await FKDB.auth.getSession();
+pelanggan.html:318: <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+pelanggan.html:320: const FK_SUPABASE_URL = "https://udqjramwhlptobfsmepx.supabase.co";
+pelanggan.html:321: const FK_SUPABASE_KEY = "sb_publishable_vTNsdoG9reqGF8vdgoN-Tw_z4R_h4Yw";
+pelanggan.html:323: const FKDB = window.supabase.createClient(
+pelanggan.html:324: FK_SUPABASE_URL,
+pelanggan.html:325: FK_SUPABASE_KEY
+pelanggan.html:931: await FKDB.auth.signInWithPassword({
+pelanggan.html:954: await FKDB
+pelanggan.html:1216: await FKDB
+pelanggan.html:1254: await FKDB
+pelanggan.html:1279: await FKDB.auth.getSession();
+
+============================================================
+3. SUPABASE CONFIGURATION DETECTION
+============================================================
+FOUND CONFIG IN: admin.html
+  https://udqjramwhlptobfsmepx.supabase.co
+  https://udqjramwhlptobfsmepx.supabase.co
+  https://udqjramwhlptobfsmepx.supabase.co
+  https://udqjramwhlptobfsmepx.supabase.co
+  SUPABASE_URL = "https://udqjramwhlptobfsmepx.supabase.co"
+  SUPABASE_URL = "https://udqjramwhlptobfsmepx.supabase.co"
+  SUPABASE_URL = "https://udqjramwhlptobfsmepx.supabase.co"
+  SUPABASE_URL = "https://udqjramwhlptobfsmepx.supabase.co"
+  SUPABASE_KEY = [REDACTED]
+  SUPABASE_KEY = [REDACTED]
+  SUPABASE_KEY = [REDACTED]
+  SUPABASE_KEY = [REDACTED]
+FOUND CONFIG IN: index.html
+  https://udqjramwhlptobfsmepx.supabase.co
+  SUPABASE_URL = "https://udqjramwhlptobfsmepx.supabase.co"
+  SUPABASE_KEY = [REDACTED]
+FOUND CONFIG IN: laporan.html
+  https://udqjramwhlptobfsmepx.supabase.co
+  https://udqjramwhlptobfsmepx.supabase.co
+  https://udqjramwhlptobfsmepx.supabase.co
+  https://udqjramwhlptobfsmepx.supabase.co
+  SUPABASE_URL = "https://udqjramwhlptobfsmepx.supabase.co"
+  SUPABASE_URL = "https://udqjramwhlptobfsmepx.supabase.co"
+  SUPABASE_URL = "https://udqjramwhlptobfsmepx.supabase.co"
+  SUPABASE_URL = "https://udqjramwhlptobfsmepx.supabase.co"
+  SUPABASE_KEY = [REDACTED]
+  SUPABASE_KEY = [REDACTED]
+  SUPABASE_KEY = [REDACTED]
+  SUPABASE_KEY = [REDACTED]
+FOUND CONFIG IN: pelanggan.html
+  https://udqjramwhlptobfsmepx.supabase.co
+  SUPABASE_URL = "https://udqjramwhlptobfsmepx.supabase.co"
+  SUPABASE_KEY = [REDACTED]
+
+============================================================
+4. DATABASE TABLES REFERENCED BY CODE
+============================================================
+TABLE: bookings
+
+============================================================
+5. DATABASE OPERATIONS
+============================================================
+--- SELECT ---
+laporan.html:897: .select("*")
+pelanggan.html:956: .select("*")
+
+--- INSERT ---
+
+--- UPDATE ---
+admin.html:1286: .update(patch)
+pelanggan.html:1218: .update({
+pelanggan.html:1256: .update({
+
+--- DELETE ---
+
+--- UPSERT ---
+
+--- RPC ---
+index.html:4114: await FKDB.rpc(
+index.html:4212: await FKDB.rpc(
+index.html:4475: await FKDB.rpc(
+index.html:4806: await FKDB.rpc(
+
+============================================================
+6. DATABASE FILTERS / QUERY COLUMNS
+============================================================
+admin.html:1287: .eq("id",id);
+index.html:3885: item.classList.contains("open");
+index.html:4760: item.classList.contains("open")
+laporan.html:898: .gte("tanggal",start)
+laporan.html:899: .lte("tanggal",end)
+laporan.html:900: .order("tanggal",{ascending:false})
+laporan.html:901: .order("dibuat_pada",{ascending:false});
+pelanggan.html:957: .order("dibuat_pada",{ascending:false});
+pelanggan.html:1222: .eq("hp",fkSelectedPhone);
+pelanggan.html:1259: .eq("hp",fkSelectedPhone);
+
+============================================================
+7. POSSIBLE DATABASE COLUMNS USED BY PROJECT
+============================================================
+COLUMN: dibuat_pada
+COLUMN: hp
+COLUMN: id
+COLUMN: tanggal
+
+============================================================
+8. INSERT / UPDATE OBJECTS
+============================================================
+pelanggan.html:1218: .update({
+pelanggan.html:1256: .update({
+
+============================================================
+9. STATUS VALUES
+============================================================
+STATUS: Batal
+STATUS: Dipanggil
+STATUS: Menunggu
+STATUS: Sedang Dilayani
+STATUS: Selesai
+
+============================================================
+10. JENIS / TYPE VALUES
+============================================================
+admin.html:742: if(a.jenis==="Booking" && b.jenis==="Booking"){
+admin.html:747: if(a.jenis==="Booking" && b.jenis!=="Booking") return -1;
+admin.html:748: if(a.jenis!=="Booking" && b.jenis==="Booking") return 1;
+admin.html:1114: if(a.jenis==="Booking" && b.jenis==="Booking"){
+admin.html:1122: if(a.jenis==="Booking") return -1;
+admin.html:1123: if(b.jenis==="Booking") return 1;
+index.html:3296: x.jenis==="Booking" &&
+index.html:3406: jenis==="Walk-in" ||
+index.html:3533: if(jenis==="Booking"){
+index.html:3566: x.jenis==="Booking" &&
+index.html:3648: jenis==="Booking"
+index.html:3691: jenis==="Booking"
+index.html:3698: jenis==="Booking"
+index.html:3737: if(jenis==="Booking"){
+index.html:4358: jenis === "Walk-in" ||
+index.html:4433: if(jenis === "Booking"){
+index.html:4552: jenis === "Booking"
+index.html:4595: jenis === "Booking"
+index.html:4603: jenis === "Booking"
+index.html:4641: if(jenis === "Booking"){
+
+============================================================
+11. DATE / TIME / TIMESTAMP REFERENCES
+============================================================
+admin.html:442: <div id="tanggalDisplay" class="date-display"></div>
+admin.html:450: <label>TANGGAL LAPORAN</label>
+admin.html:451: <input type="date" id="tanggalLaporan">
+admin.html:607: function formatTanggal(tanggal){
+admin.html:609: if(!tanggal) return "-";
+admin.html:611: const p=String(tanggal).split("-");
+admin.html:613: if(p.length!==3) return String(tanggal);
+admin.html:661: const tanggal=
+admin.html:662: document.getElementById("tanggalLaporan").value||today();
+admin.html:665: data.filter(x=>x.tanggal===tanggal);
+admin.html:702: document.getElementById("tanggalDisplay").textContent=
+admin.html:703: formatTanggal(tanggal);
+admin.html:761: '<div class="empty">Tidak ada antrean pada tanggal ini.</div>'+
+admin.html:867: x.tanggal===data[i].tanggal &&
+admin.html:958: document.getElementById("tanggalLaporan").value=today();
+admin.html:960: document.getElementById("tanggalLaporan")
+admin.html:1011: function fkFormatTanggal(t){
+admin.html:1082: current.jam_booking
+admin.html:1084: String(current.jam_booking).substring(0,5)
+admin.html:1116: return String(a.jam_booking||"99:99")
+admin.html:1118: String(b.jam_booking||"99:99")
+admin.html:1125: return String(a.dibuat_pada||"")
+admin.html:1127: String(b.dibuat_pada||"")
+admin.html:1139: 'Tidak ada antrean pada tanggal ini.' +
+admin.html:1203: x.jam_booking
+admin.html:1204: ? String(x.jam_booking).substring(0,5)
+admin.html:1264: patch.dipanggil_pada=now;
+admin.html:1267: patch.mulai_pada=now;
+admin.html:1270: patch.selesai_pada=now;
+admin.html:1273: patch.dibatalkan_pada=now;
+admin.html:1277: patch.dipanggil_pada=null;
+admin.html:1278: patch.mulai_pada=null;
+admin.html:1279: patch.selesai_pada=null;
+admin.html:1280: patch.dibatalkan_pada=null;
+admin.html:1331: x.tanggal===current.tanggal &&
+admin.html:1462: .getElementById("tanggalLaporan")
+admin.html:1468: const tanggal =
+admin.html:1470: "tanggalLaporan"
+admin.html:1473: if(tanggal){
+admin.html:1474: tanggal.value=fkToday();
+index.html:2476: <span>Pilih tanggal & jam</span>
+index.html:2491: <label>TANGGAL BOOKING</label>
+index.html:2494: id="tanggalBooking"
+index.html:2508: Pilih tanggal terlebih dahulu.
+index.html:2889: function tanggalHariIni(){
+index.html:2941: function formatTanggal(tanggal){
+index.html:2943: if(!tanggal) return "-";
+index.html:2945: const p=String(tanggal).split("-");
+index.html:2948: return String(tanggal);
+index.html:2971: return String(tanggal);
+index.html:3139: String(b.tanggal)
+index.html:3140: .localeCompare(String(a.tanggal))
+index.html:3163: formatTanggal(terakhir.tanggal);
+index.html:3227: const tanggal=
+index.html:3229: "tanggalBooking"
+index.html:3236: if(!tanggal){
+index.html:3239: "Pilih tanggal terlebih dahulu.";
+index.html:3247: const hariIni=tanggalHariIni();
+index.html:3249: if(tanggal<hariIni){
+index.html:3252: "Tanggal tidak boleh sebelum hari ini.";
+index.html:3274: if(tanggal===hariIni){
+index.html:3297: x.tanggal===tanggal &&
+index.html:3352: "Tidak ada slot tersedia pada tanggal ini.";
+index.html:3431: function nomorBerikutnya(tanggal){
+index.html:3434: x=>x.tanggal===tanggal
+index.html:3529: let tanggal=tanggalHariIni();
+index.html:3535: tanggal=
+index.html:3538: "tanggalBooking"
+index.html:3544: if(!tanggal){
+index.html:3547: "Silakan pilih tanggal booking."
+index.html:3567: x.tanggal===tanggal &&
+index.html:3588: nomorBerikutnya(tanggal);
+index.html:3609: tanggal,
+index.html:3680: '<small>TANGGAL</small>'+
+index.html:3683: formatTanggal(tanggal)
+index.html:3741: "tanggalBooking"
+index.html:3804: "Tanggal: "+
+index.html:3806: formatTanggal(x.tanggal)
+index.html:3923: const tanggalInput=
+index.html:3925: "tanggalBooking"
+index.html:3928: if(tanggalInput){
+index.html:3930: tanggalInput.min=
+index.html:3931: tanggalHariIni();
+index.html:3970: "tanggalBooking"
+index.html:4054: function fkFormatTanggal(tanggal){
+index.html:4056: if(!tanggal) return "-";
+index.html:4058: const p = String(tanggal).split("-");
+index.html:4060: if(p.length !== 3) return tanggal;
+index.html:4178: document.getElementById("tanggalBooking");
+index.html:4182: const tanggal = dateInput.value;
+index.html:4187: if(!tanggal){
+index.html:4190: "Pilih tanggal terlebih dahulu.";
+index.html:4197: if(tanggal < fkToday()){
+index.html:4200: "Tanggal tidak boleh sebelum hari ini.";
+index.html:4215: p_tanggal: tanggal
+index.html:4228: x.jam_booking ||
+index.html:4255: if(tanggal === fkToday()){
+index.html:4312: "Tidak ada slot tersedia pada tanggal ini.";
+index.html:4430: let tanggal = fkToday();
+index.html:4435: tanggal =
+index.html:4437: "tanggalBooking"
+index.html:4442: if(!tanggal){
+index.html:4445: "Silakan pilih tanggal booking."
+index.html:4483: p_tanggal: tanggal,
+index.html:4484: p_jam_booking: jamBooking
+index.html:4534: tanggal: tanggal,
+index.html:4584: '<small>TANGGAL</small>' +
+index.html:4587: fkFormatTanggal(tanggal)
+index.html:4643: const tanggalInput =
+index.html:4644: document.getElementById("tanggalBooking");
+index.html:4646: if(tanggalInput){
+index.html:4647: tanggalInput.value = "";
+index.html:4702: "%0ATanggal: " +
+index.html:4704: fkFormatTanggal(x.tanggal)
+index.html:4829: "\nTanggal: " + x.tanggal +
+laporan.html:333: <option value="custom">Tanggal Tertentu</option>
+laporan.html:340: <label>TANGGAL</label>
+laporan.html:342: <input type="date" id="tanggal">
+laporan.html:405: <th>TANGGAL</th>
+laporan.html:469: function formatTanggal(tanggal){
+laporan.html:471: if(!tanggal) return "-";
+laporan.html:473: const p=String(tanggal).split("-");
+laporan.html:475: if(p.length!==3) return String(tanggal);
+laporan.html:588: document.getElementById("tanggal").value||
+laporan.html:607: document.getElementById("tanggal").disabled=!custom;
+laporan.html:619: String(x.tanggal)>=start&&
+laporan.html:620: String(x.tanggal)<=end
+laporan.html:714: String(b.tanggal).localeCompare(String(a.tanggal))||
+laporan.html:723: '<td>'+escapeHTML(formatTanggal(x.tanggal))+'</td>'+
+laporan.html:739: document.getElementById("tanggal").value=today();
+laporan.html:741: document.getElementById("tanggal").disabled=true;
+laporan.html:789: function fkFormatTanggal(t){
+laporan.html:856: document.getElementById("tanggal")
+laporan.html:871: const tanggal =
+laporan.html:872: document.getElementById("tanggal");
+laporan.html:874: if(tanggal)
+laporan.html:875: tanggal.disabled=!custom;
+laporan.html:898: .gte("tanggal",start)
+laporan.html:899: .lte("tanggal",end)
+laporan.html:900: .order("tanggal",{ascending:false})
+laporan.html:901: .order("dibuat_pada",{ascending:false});
+laporan.html:1025: fkFormatTanggal(x.tanggal)
+laporan.html:1197: document.getElementById("tanggal").value =
+laporan.html:1200: document.getElementById("tanggal").disabled =
+pelanggan.html:476: function formatTanggal(tanggal){
+pelanggan.html:478: if(!tanggal) return "-";
+pelanggan.html:480: const p=String(tanggal).split("-");
+pelanggan.html:482: if(p.length!==3) return String(tanggal);
+pelanggan.html:537: String(b.tanggal).localeCompare(String(a.tanggal))||
+pelanggan.html:566: String(b.last?.tanggal||"")
+pelanggan.html:567: .localeCompare(String(a.last?.tanggal||""))
+pelanggan.html:633: String(b.tanggal).localeCompare(String(a.tanggal))||
+pelanggan.html:674: escapeHTML(formatTanggal(x.tanggal))+
+pelanggan.html:817: function fkFormatTanggal(t){
+pelanggan.html:957: .order("dibuat_pada",{ascending:false});
+pelanggan.html:1019: b[1][0]?.dibuat_pada || ""
+pelanggan.html:1022: a[1][0]?.dibuat_pada || ""
+pelanggan.html:1102: b.dibuat_pada||""
+pelanggan.html:1104: String(a.dibuat_pada||"")
+pelanggan.html:1149: fkFormatTanggal(x.tanggal)
+pelanggan.html:1153: x.jam_booking
+pelanggan.html:1156: String(x.jam_booking)
+
+============================================================
+12. SUPABASE AUTHENTICATION
+============================================================
+admin.html:1401: await FKDB.auth.getSession();
+admin.html:1443: await FKDB.auth.signOut();
+laporan.html:883: await FKDB.auth.getSession();
+laporan.html:1162: await FKDB.auth.signInWithPassword({
+laporan.html:1188: await FKDB.auth.getSession();
+pelanggan.html:931: await FKDB.auth.signInWithPassword({
+pelanggan.html:1279: await FKDB.auth.getSession();
+
+============================================================
+13. SUPABASE REALTIME
+============================================================
+admin.html:1416: REALTIME
+admin.html:1419: function fkRealtime(){
+admin.html:1422: .channel("fk-bookings-admin")
+admin.html:1424: "postgres_changes",
+admin.html:1434: .subscribe();
+admin.html:1479: fkRealtime();
+
+============================================================
+14. RLS / POLICY / SECURITY REFERENCES
+============================================================
+admin.html:8: window.FK_SUPABASE_KEY = "sb_publishable_vTNsdoG9reqGF8vdgoN-Tw_z4R_h4Yw";
+admin.html:18: window.FK_SUPABASE_KEY = "sb_publishable_vTNsdoG9reqGF8vdgoN-Tw_z4R_h4Yw";
+admin.html:387: const FK_SUPABASE_KEY = "sb_publishable_vTNsdoG9reqGF8vdgoN-Tw_z4R_h4Yw";
+admin.html:401: const FK_SUPABASE_KEY = "sb_publishable_vTNsdoG9reqGF8vdgoN-Tw_z4R_h4Yw";
+index.html:1705: const FK_SUPABASE_KEY = "sb_publishable_vTNsdoG9reqGF8vdgoN-Tw_z4R_h4Yw";
+laporan.html:8: window.FK_SUPABASE_KEY = "sb_publishable_vTNsdoG9reqGF8vdgoN-Tw_z4R_h4Yw";
+laporan.html:257: const FK_SUPABASE_KEY = "sb_publishable_vTNsdoG9reqGF8vdgoN-Tw_z4R_h4Yw";
+laporan.html:270: const FK_SUPABASE_KEY = "sb_publishable_vTNsdoG9reqGF8vdgoN-Tw_z4R_h4Yw";
+laporan.html:280: const FK_SUPABASE_KEY = "sb_publishable_vTNsdoG9reqGF8vdgoN-Tw_z4R_h4Yw";
+pelanggan.html:321: const FK_SUPABASE_KEY = "sb_publishable_vTNsdoG9reqGF8vdgoN-Tw_z4R_h4Yw";
+
+CATATAN:
+RLS POLICY AKTUAL DI SUPABASE TIDAK DAPAT DIVERIFIKASI DARI FILE FRONTEND.
+Bagian ini hanya menunjukkan apakah project menyebut konsep tersebut.
+
+============================================================
+15. LOCALSTORAGE / LEGACY DATA
+============================================================
+admin.html:562: data=JSON.parse(localStorage.getItem("barberData")||"[]");
+admin.html:569: localStorage.setItem("barberData",JSON.stringify(data));
+admin.html:950: localStorage.removeItem("barberData");
+index.html:2834: data=JSON.parse(
+index.html:2835: localStorage.getItem("barberData") || "[]"
+index.html:2881: localStorage.setItem(
+index.html:2882: "barberData",
+index.html:2883: JSON.stringify(data)
+index.html:3950: data=JSON.parse(
+index.html:3951: localStorage.getItem(
+index.html:3952: "barberData"
+laporan.html:433: data=JSON.parse(localStorage.getItem("barberData")||"[]");
+pelanggan.html:436: data=JSON.parse(localStorage.getItem("barberData")||"[]");
+pelanggan.html:445: localStorage.setItem("barberData",JSON.stringify(data));
+
+============================================================
+16. VERCEL CONFIGURATION
+============================================================
+Tidak ditemukan konfigurasi VercEL lokal.
+
+============================================================
+17. ENVIRONMENT FILE DETECTION
+============================================================
+Tidak ditemukan file .env.
+
+============================================================
+18. DUPLICATE SUPABASE INITIALIZATION CHECK
+============================================================
+
+File           CreateClientCount
+----           -----------------
+admin.html                     4
+index.html                     1
+laporan.html                   4
+pelanggan.html                 1
+
+
+
+
+============================================================
+19. SQL DRAFT — CANDIDATE STRUCTURE
+============================================================
+-- =========================================================
+-- DRAFT ONLY
+-- JANGAN LANGSUNG EXECUTE SEBELUM DICOCOKKAN
+-- DENGAN DATABASE SUPABASE AKTUAL
+-- =========================================================
+
+CREATE TABLE IF NOT EXISTS public.bookings (
+    id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+    nomor_antrean text,
+    nama text,
+    hp text,
+    layanan text,
+    harga numeric,
+    jenis text,
+    status text,
+    tanggal date,
+    jam_booking time,
+    dibuat_pada timestamptz DEFAULT now(),
+    dipanggil_pada timestamptz,
+    mulai_pada timestamptz,
+    selesai_pada timestamptz,
+    dibatalkan_pada timestamptz
+);
+
+-- Suggested status constraint
+ALTER TABLE public.bookings
+ADD CONSTRAINT bookings_status_check
+CHECK (status IN ('Menunggu','Dipanggil','Sedang Dilayani','Selesai','Batal'));
+
+-- Suggested indexes
+CREATE INDEX IF NOT EXISTS bookings_tanggal_idx
+ON public.bookings(tanggal);
+
+CREATE INDEX IF NOT EXISTS bookings_hp_idx
+ON public.bookings(hp);
+
+CREATE INDEX IF NOT EXISTS bookings_status_idx
+ON public.bookings(status);
+
+-- Realtime candidate
+-- ALTER PUBLICATION supabase_realtime ADD TABLE public.bookings;
+
+============================================================
+20. SUPABASE DASHBOARD CHECKLIST
+============================================================
+[ ] Table public.bookings exists
+[ ] Semua kolom sesuai dengan kode frontend
+[ ] Primary key sesuai
+[ ] Data type setiap kolom sesuai
+[ ] Default value tanggal/waktu sesuai
+[ ] RLS status sudah diperiksa
+[ ] SELECT policy sudah diperiksa
+[ ] INSERT policy sudah diperiksa
+[ ] UPDATE policy sudah diperiksa
+[ ] DELETE policy sudah diperiksa
+[ ] Auth user/admin sudah dibuat
+[ ] Email/password Auth sudah aktif bila digunakan
+[ ] Redirect URL Vercel sudah sesuai
+[ ] Realtime untuk bookings sudah aktif
+[ ] Tidak ada duplicate Supabase client
+[ ] localStorage barberData sudah tidak digunakan untuk database utama
+
+============================================================
+21. POTENTIAL PROBLEMS DETECTED
+============================================================
+[CHECK] LOCALSTORAGE: barberData masih digunakan.
+[CHECK] SUPABASE CLIENT: createClient() ditemukan di lebih dari satu lokasi.
+[CHECK] SUPABASE SDK: CDN Supabase terdeteksi di project.
+[CHECK] AUTH: Supabase Auth digunakan oleh frontend.
+[CHECK] REALTIME: postgres_changes ditemukan.
+
+============================================================
+22. FINAL SUMMARY
+============================================================
+Tables detected:
+ - bookings
+
+Columns detected:
+ - dibuat_pada
+ - hp
+ - id
+ - tanggal
+
+Status detected:
+ - Batal
+ - Dipanggil
+ - Menunggu
+ - Sedang Dilayani
+ - Selesai
+
+Supabase client locations:
+ - admin.html : 4 createClient()
+ - index.html : 1 createClient()
+ - laporan.html : 4 createClient()
+ - pelanggan.html : 1 createClient()
+
+IMPORTANT:
+Audit ini hanya memeriksa PROJECT LOKAL.
+Audit ini TIDAK membuktikan kondisi database Supabase aktual.
+RLS, policies, Auth users, Realtime publication, dan schema aktual
+tetap harus dicocokkan di Supabase Dashboard.
+
+===== END AUDIT =====
