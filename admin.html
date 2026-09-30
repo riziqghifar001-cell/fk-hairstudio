@@ -1,37 +1,17 @@
 ﻿<!DOCTYPE html>
 <html lang="id">
 <head>
-    <!-- SUPABASE CORE SDK & GLOBAL FKDB INIT -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-    <script>
-        window.FK_SUPABASE_URL = "https://udqjramwhlptobfsmepx.supabase.co";
-        window.FK_SUPABASE_KEY = "sb_publishable_vTNsdoG9reqGF8vdgoN-Tw_z4R_h4Yw";
-        if (typeof supabase !== 'undefined') {
-            window.FKDB = supabase.createClient(window.FK_SUPABASE_URL, window.FK_SUPABASE_KEY);
-            console.log("[SYSTEM] FKDB Global Client berhasil dibuat di window.FKDB");
-        }
-    </script>
-    <!-- SUPABASE CORE SDK & GLOBAL FKDB INIT -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-    <script>
-        window.FK_SUPABASE_URL = "https://udqjramwhlptobfsmepx.supabase.co";
-        window.FK_SUPABASE_KEY = "sb_publishable_vTNsdoG9reqGF8vdgoN-Tw_z4R_h4Yw";
-        
-        try {
-            if (typeof supabase !== 'undefined') {
-                window.FKDB = supabase.createClient(window.FK_SUPABASE_URL, window.FK_SUPABASE_KEY);
-                console.log("[SYSTEM] FKDB Global Client berhasil dibuat.");
-            }
-        } catch (e) {
-            console.error("[SYSTEM] Gagal inisialisasi FKDB:", e);
-        }
-    </script>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#0b0b0d">
+
 <title>FK Admin — Dashboard</title>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+
 <style>
+
 *{box-sizing:border-box;margin:0;padding:0}
 
 body{
@@ -380,41 +360,115 @@ grid-template-columns:1fr 1fr
 grid-template-columns:1fr 1fr
 }
 }
+
+
+/* =====================================================
+   FK ADMIN AUTH
+   ===================================================== */
+
+body.fk-auth-loading .sidebar,
+body.fk-auth-loading .main {
+    display:none !important;
+}
+
+#fkAdminLogin {
+    position:fixed;
+    inset:0;
+    z-index:99999;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:#0b0b0d;
+    padding:20px;
+}
+
+.fk-login-card {
+    width:100%;
+    max-width:390px;
+    background:#151518;
+    border:1px solid #29292e;
+    border-radius:16px;
+    padding:30px;
+    box-shadow:0 20px 70px rgba(0,0,0,.45);
+}
+
+.fk-login-logo {
+    font-size:24px;
+    font-weight:800;
+    letter-spacing:3px;
+    margin-bottom:5px;
+}
+
+.fk-login-subtitle {
+    color:#666;
+    font-size:10px;
+    letter-spacing:1.5px;
+    margin-bottom:28px;
+}
+
+.fk-login-card label {
+    display:block;
+    color:#777;
+    font-size:10px;
+    letter-spacing:1px;
+    margin:14px 0 7px;
+}
+
+.fk-login-card input {
+    width:100%;
+    padding:12px 13px;
+    border-radius:8px;
+    border:1px solid #333;
+    background:#0b0b0d;
+    color:#fff;
+    outline:none;
+}
+
+.fk-login-card input:focus {
+    border-color:#d4af37;
+}
+
+.fk-login-btn {
+    width:100%;
+    margin-top:20px;
+    padding:12px;
+    border:0;
+    border-radius:8px;
+    background:#fff;
+    color:#111;
+    font-weight:700;
+    cursor:pointer;
+}
+
+.fk-login-btn:disabled {
+    opacity:.5;
+    cursor:not-allowed;
+}
+
+#fkLoginError {
+    display:none;
+    margin-top:14px;
+    padding:10px 12px;
+    border-radius:8px;
+    background:#321c1c;
+    border:1px solid #552727;
+    color:#ef6262;
+    font-size:11px;
+    line-height:1.5;
+}
+
+.fk-user-email {
+    color:#666;
+    font-size:10px;
+    margin-top:5px;
+}
 </style>
 
-<script id="fk-supabase-config">
-const FK_SUPABASE_URL = "https://udqjramwhlptobfsmepx.supabase.co";
-const FK_SUPABASE_KEY = "sb_publishable_vTNsdoG9reqGF8vdgoN-Tw_z4R_h4Yw";
-
-window.FKDB = window.supabase.createClient(
-    FK_SUPABASE_URL,
-    FK_SUPABASE_KEY
-);
-
-const FK_ADMIN_WA = "628879800000";
-</script>
-    <!-- FKDB Robust Loader -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-    <script>
-        (function initFKDB() {
-            const FK_SUPABASE_URL = "https://udqjramwhlptobfsmepx.supabase.co";
-            const FK_SUPABASE_KEY = "sb_publishable_vTNsdoG9reqGF8vdgoN-Tw_z4R_h4Yw";
-
-            function attachFKDB() {
-                if (window.supabase && window.supabase.createClient) {
-                    window.FKDB = window.supabase.createClient(FK_SUPABASE_URL, FK_SUPABASE_KEY);
-                    console.log("[FKDB] Initialized successfully as window.FKDB");
-                } else {
-                    console.warn("[FKDB] Waiting for Supabase SDK...");
-                    setTimeout(attachFKDB, 100);
-                }
-            }
-            attachFKDB();
-        })();
-    </script>
 </head>
 
 <body>
+
+
 
 <aside class="sidebar">
 
@@ -544,9 +598,7 @@ Belum ada pelanggan yang sedang dilayani.
 
 <div id="layananList"></div>
 
-<div class="reset">
-<button onclick="resetPrototype()">Reset Semua Data</button>
-</div>
+
 
 </div>
 
@@ -554,924 +606,1002 @@ Belum ada pelanggan yang sedang dilayani.
 
 </main>
 
+
+
 <script>
+/* =========================================================
+   FK ADMIN — SUPABASE SINGLE CLIENT
+   ========================================================= */
 
-let data=[];
+(function () {
 
-try{
-data=JSON.parse(localStorage.getItem("barberData")||"[]");
-if(!Array.isArray(data)) data=[];
-}catch(e){
-data=[];
-}
+    "use strict";
 
-function simpan(){
-localStorage.setItem("barberData",JSON.stringify(data));
-}
+    const SUPABASE_URL =
+        "https://udqjramwhlptobfsmepx.supabase.co";
 
-function today(){
-const d=new Date();
+    const SUPABASE_KEY =
+        "sb_publishable_vTNsdoG9reqGF8vdgoN-Tw_z4R_h4Yw";
 
-return d.getFullYear()+"-"+
-String(d.getMonth()+1).padStart(2,"0")+"-"+
-String(d.getDate()).padStart(2,"0");
-}
+    window.FK_SUPABASE_URL = SUPABASE_URL;
+    window.FK_SUPABASE_KEY = SUPABASE_KEY;
 
-function rupiah(n){
-return new Intl.NumberFormat("id-ID",{
-style:"currency",
-currency:"IDR",
-maximumFractionDigits:0
-}).format(Number(n)||0);
-}
+    /* -----------------------------------------------------
+       AUTH LOADING STATE
+       ----------------------------------------------------- */
 
-function norm(hp){
-let x=String(hp||"").replace(/\D/g,"");
+    document.documentElement.classList.add("fk-auth-loading");
 
-if(x.startsWith("62")){
-x="0"+x.substring(2);
-}
+    document.addEventListener("DOMContentLoaded", function () {
+        document.body.classList.add("fk-auth-loading");
+    });
 
-return x;
-}
+    /* -----------------------------------------------------
+       SINGLE SUPABASE CLIENT
+       ----------------------------------------------------- */
 
-function escapeHTML(value){
-return String(value??"")
-.replace(/&/g,"&amp;")
-.replace(/</g,"&lt;")
-.replace(/>/g,"&gt;")
-.replace(/"/g,"&quot;")
-.replace(/'/g,"&#039;");
-}
-
-function formatTanggal(tanggal){
-
-if(!tanggal) return "-";
-
-const p=String(tanggal).split("-");
-
-if(p.length!==3) return String(tanggal);
-
-const bulan=[
-"Januari","Februari","Maret","April","Mei","Juni",
-"Juli","Agustus","September","Oktober","November","Desember"
-];
-
-return Number(p[2])+" "+bulan[Number(p[1])-1]+" "+p[0];
-}
-
-function clock(){
-
-document.getElementById("jam").textContent=
-new Date().toLocaleTimeString("id-ID",{
-hour:"2-digit",
-minute:"2-digit",
-second:"2-digit"
-});
-
-}
-
-setInterval(clock,1000);
-clock();
-
-function statusClass(status){
-
-return {
-"Menunggu":"menunggu",
-"Dipanggil":"dipanggil",
-"Sedang Dilayani":"dilayani",
-"Selesai":"selesai",
-"Batal":"batal"
-}[status]||"menunggu";
-
-}
-
-function customerPhones(records){
-
-return new Set(
-records
-.map(x=>norm(x.hp))
-.filter(Boolean)
-);
-
-}
-
-function render(){
-
-const tanggal=
-document.getElementById("tanggalLaporan").value||today();
-
-const hari=
-data.filter(x=>x.tanggal===tanggal);
-
-const selesai=
-hari.filter(x=>x.status==="Selesai");
-
-const uniquePhones=
-customerPhones(hari);
-
-document.getElementById("total").textContent=
-uniquePhones.size;
-
-document.getElementById("menunggu").textContent=
-hari.filter(x=>
-x.status==="Menunggu"||
-x.status==="Dipanggil"
-).length;
-
-document.getElementById("selesai").textContent=
-selesai.length;
-
-document.getElementById("pendapatan").textContent=
-rupiah(
-selesai.reduce(
-(a,b)=>a+Number(b.harga||0),0
-)
-);
-
-document.getElementById("customerBaru").textContent=
-[...uniquePhones].filter(phone=>
-data.filter(x=>norm(x.hp)===phone).length===1
-).length;
-
-document.getElementById("customerLama").textContent=
-[...uniquePhones].filter(phone=>
-data.filter(x=>norm(x.hp)===phone).length>1
-).length;
-
-document.getElementById("tanggalDisplay").textContent=
-formatTanggal(tanggal);
-
-const current=
-hari.find(x=>x.status==="Sedang Dilayani");
-
-if(current){
-
-const index=data.indexOf(current);
-
-document.getElementById("currentCustomer").innerHTML=
-'<div class="current-box">'+
-'<div>'+
-'<div class="current-name">'+
-escapeHTML(current.nomorAntrean)+" — "+
-escapeHTML(current.nama)+
-'</div>'+
-'<div class="current-meta">'+
-escapeHTML(current.layanan)+
-" • "+
-escapeHTML(current.jenis)+
-(current.jamBooking?
-" • "+escapeHTML(current.jamBooking):"")+
-'</div>'+
-'</div>'+
-'<button class="action btn-done" onclick="selesai('+index+')">Selesai</button>'+
-'</div>';
-
-}else{
-
-document.getElementById("currentCustomer").innerHTML=
-'<div class="empty">Belum ada pelanggan yang sedang dilayani.</div>';
-
-}
-
-const antrean=[...hari].sort((a,b)=>{
-
-if(a.status==="Batal" && b.status!=="Batal") return 1;
-if(a.status!=="Batal" && b.status==="Batal") return -1;
-
-if(a.jenis==="Booking" && b.jenis==="Booking"){
-return String(a.jamBooking||"99:99")
-.localeCompare(String(b.jamBooking||"99:99"));
-}
-
-if(a.jenis==="Booking" && b.jenis!=="Booking") return -1;
-if(a.jenis!=="Booking" && b.jenis==="Booking") return 1;
-
-return Number(a.id||0)-Number(b.id||0);
-
-});
-
-const table=
-document.getElementById("antreanTable");
-
-if(!antrean.length){
-
-table.innerHTML=
-'<tr><td colspan="8">'+
-'<div class="empty">Tidak ada antrean pada tanggal ini.</div>'+
-'</td></tr>';
-
-}else{
-
-table.innerHTML=antrean.map(x=>{
-
-const index=data.indexOf(x);
-const status=x.status||"Menunggu";
-
-let action="";
-
-if(status==="Menunggu"){
-
-action=
-'<button class="action btn-call" onclick="panggil('+index+')">Panggil</button>'+
-'<button class="action btn-cancel" onclick="batal('+index+')">Batal</button>';
-
-}
-
-if(status==="Dipanggil"){
-
-action=
-'<button class="action btn-start" onclick="mulai('+index+')">Mulai</button>'+
-'<button class="action btn-cancel" onclick="batal('+index+')">Batal</button>';
-
-}
-
-if(status==="Sedang Dilayani"){
-
-action=
-'<button class="action btn-done" onclick="selesai('+index+')">Selesai</button>';
-
-}
-
-if(status==="Selesai"){
-
-action=
-'<button class="action btn-reset" onclick="bukaLagi('+index+')">Buka Lagi</button>';
-
-}
-
-if(status==="Batal"){
-
-action=
-'<button class="action btn-reset" onclick="bukaLagi('+index+')">Aktifkan</button>';
-
-}
-
-return '<tr>'+
-'<td>'+escapeHTML(x.nomorAntrean)+'</td>'+
-'<td>'+escapeHTML(x.nama)+'</td>'+
-'<td>'+escapeHTML(x.hp)+'</td>'+
-'<td>'+escapeHTML(x.layanan)+'</td>'+
-'<td>'+escapeHTML(x.jenis)+'</td>'+
-'<td>'+escapeHTML(x.jamBooking||"-")+'</td>'+
-'<td><span class="status '+statusClass(status)+'">'+
-escapeHTML(status)+
-'</span></td>'+
-'<td><div class="actions">'+action+'</div></td>'+
-'</tr>';
-
-}).join("");
-
-}
-
-const counts={};
-
-selesai.forEach(x=>{
-counts[x.layanan]=(counts[x.layanan]||0)+1;
-});
-
-const sorted=
-Object.entries(counts)
-.sort((a,b)=>b[1]-a[1]);
-
-document.getElementById("layananList").innerHTML=
-sorted.length?
-sorted.map(x=>
-'<div class="service-row">'+
-'<span>'+escapeHTML(x[0])+'</span>'+
-'<span class="service-count">'+x[1]+'x</span>'+
-'</div>'
-).join(""):
-'<div class="empty">Belum ada transaksi selesai.</div>';
-
-}
-
-function panggil(i){
-
-if(!data[i] || data[i].status!=="Menunggu") return;
-
-data[i].status="Dipanggil";
-data[i].dipanggilPada=new Date().toISOString();
-
-simpan();
-render();
-
-}
-
-function mulai(i){
-
-if(!data[i] || data[i].status!=="Dipanggil") return;
-
-const adaYangDilayani=data.some((x,j)=>
-j!==i &&
-x.tanggal===data[i].tanggal &&
-x.status==="Sedang Dilayani"
-);
-
-if(adaYangDilayani){
-
-alert("Masih ada pelanggan lain yang sedang dilayani.");
-
-return;
-
-}
-
-data[i].status="Sedang Dilayani";
-data[i].mulaiPada=new Date().toISOString();
-
-simpan();
-render();
-
-}
-
-function selesai(i){
-
-if(!data[i] || data[i].status!=="Sedang Dilayani") return;
-
-data[i].status="Selesai";
-data[i].selesaiPada=new Date().toISOString();
-
-simpan();
-render();
-
-}
-
-function batal(i){
-
-if(!data[i]) return;
-
-if(
-data[i].status==="Selesai"||
-data[i].status==="Batal"
-){
-return;
-}
-
-if(!confirm(
-"Batalkan antrean "+
-data[i].nomorAntrean+
-"?")){
-return;
-}
-
-data[i].status="Batal";
-data[i].dibatalkanPada=new Date().toISOString();
-
-simpan();
-render();
-
-}
-
-function bukaLagi(i){
-
-if(!data[i]) return;
-
-data[i].status="Menunggu";
-data[i].dipanggilPada=null;
-data[i].mulaiPada=null;
-data[i].selesaiPada=null;
-data[i].dibatalkanPada=null;
-
-simpan();
-render();
-
-}
-
-function resetPrototype(){
-
-if(!confirm(
-"PERINGATAN!\n\n"+
-"Semua data barber akan dihapus.\n\n"+
-"Lanjutkan?"
-)){
-return;
-}
-
-localStorage.removeItem("barberData");
-
-data=[];
-
-render();
-
-}
-
-document.getElementById("tanggalLaporan").value=today();
-
-document.getElementById("tanggalLaporan")
-.addEventListener("change",render);
-
-render();
-
-</script>
-
-<script id="fk-supabase-migration">
-
-let fkAdminData = [];
-let fkAdminDate = "";
-
-function fkToday(){
-
-    const d = new Date();
-
-    return d.getFullYear() + "-" +
-        String(d.getMonth()+1).padStart(2,"0") + "-" +
-        String(d.getDate()).padStart(2,"0");
-}
-
-function fkRupiah(n){
-
-    return new Intl.NumberFormat("id-ID",{
-        style:"currency",
-        currency:"IDR",
-        maximumFractionDigits:0
-    }).format(Number(n)||0);
-}
-
-function fkNorm(hp){
-
-    let x=String(hp||"").replace(/\D/g,"");
-
-    if(x.startsWith("62")){
-        x="0"+x.substring(2);
-    }
-
-    return x;
-}
-
-function fkEscape(v){
-
-    return String(v??"")
-        .replace(/&/g,"&amp;")
-        .replace(/</g,"&lt;")
-        .replace(/>/g,"&gt;")
-        .replace(/"/g,"&quot;")
-        .replace(/'/g,"&#039;");
-}
-
-function fkFormatTanggal(t){
-
-    if(!t) return "-";
-
-    const p=String(t).split("-");
-
-    if(p.length!==3) return t;
-
-    const bulan=[
-        "Januari","Februari","Maret","April","Mei","Juni",
-        "Juli","Agustus","September","Oktober","November","Desember"
-    ];
-
-    return Number(p[2])+" "+
-        bulan[Number(p[1])-1]+" "+
-        p[0];
-}
-
-/* ==================================================
-   AUTH
-================================================== */
-
-function fkShowLogin(){
-
-    if(document.getElementById("fkAdminLogin"))
+    if (!window.supabase || !window.supabase.createClient) {
+        console.error("[FKDB] Supabase SDK tidak tersedia.");
         return;
-
-    
-
-    fkAdminData.forEach(x=>{
-
-        const hp=fkNorm(x.hp);
-
-        if(hp){
-            customerCounts[hp] =
-                (customerCounts[hp]||0)+1;
-        }
-    });
-
-    document.getElementById("customerBaru").textContent =
-        Object.values(customerCounts)
-            .filter(x=>x===1).length;
-
-    document.getElementById("customerLama").textContent =
-        Object.values(customerCounts)
-            .filter(x=>x>1).length;
-
-    const current =
-        hari.find(x=>x.status==="Sedang Dilayani");
-
-    const currentBox =
-        document.getElementById("currentCustomer");
-
-    if(current){
-
-        currentBox.innerHTML =
-            '<div class="current-box">' +
-
-            '<div>' +
-
-            '<div class="current-name">' +
-            fkEscape(current.nomor_antrean) +
-            " — " +
-            fkEscape(current.nama) +
-            '</div>' +
-
-            '<div class="current-meta">' +
-            fkEscape(current.layanan) +
-            " • " +
-            fkEscape(current.jenis) +
-            (
-                current.jam_booking
-                ? " • "+fkEscape(
-                    String(current.jam_booking).substring(0,5)
-                  )
-                : ""
-            ) +
-            '</div>' +
-
-            '</div>' +
-
-            '<button class="action btn-done" onclick="fkSelesai(\''+
-            current.id+
-            '\')">Selesai</button>' +
-
-            '</div>';
-
-    }else{
-
-        currentBox.innerHTML =
-            '<div class="empty">' +
-            'Belum ada pelanggan yang sedang dilayani.' +
-            '</div>';
     }
 
-    const sorted=[...hari].sort(function(a,b){
+    if (!window.FKDB) {
+        window.FKDB =
+            window.supabase.createClient(
+                SUPABASE_URL,
+                SUPABASE_KEY
+            );
+    }
 
-        if(a.status==="Batal" && b.status!=="Batal")
-            return 1;
+    const FKDB = window.FKDB;
 
-        if(a.status!=="Batal" && b.status==="Batal")
-            return -1;
+    console.log("[FKDB] Single client initialized.");
 
-        if(a.jenis==="Booking" && b.jenis==="Booking"){
+    /* -----------------------------------------------------
+       STATE
+       ----------------------------------------------------- */
 
-            return String(a.jam_booking||"99:99")
-                .localeCompare(
-                    String(b.jam_booking||"99:99")
-                );
+    let fkAdminData = [];
+    let fkRealtimeChannel = null;
+    let fkStarted = false;
+
+    /* -----------------------------------------------------
+       HELPERS
+       ----------------------------------------------------- */
+
+    function fkToday() {
+
+        const d = new Date();
+
+        return d.getFullYear() + "-" +
+            String(d.getMonth() + 1).padStart(2, "0") + "-" +
+            String(d.getDate()).padStart(2, "0");
+    }
+
+    function fkRupiah(n) {
+
+        return new Intl.NumberFormat("id-ID", {
+            style: "currency",
+            currency: "IDR",
+            maximumFractionDigits: 0
+        }).format(Number(n) || 0);
+    }
+
+    function fkNorm(hp) {
+
+        let x = String(hp || "").replace(/\D/g, "");
+
+        if (x.startsWith("62")) {
+            x = "0" + x.substring(2);
         }
 
-        if(a.jenis==="Booking") return -1;
-        if(b.jenis==="Booking") return 1;
+        return x;
+    }
 
-        return String(a.dibuat_pada||"")
-            .localeCompare(
-                String(b.dibuat_pada||"")
+    function fkEscape(v) {
+
+        return String(v ?? "")
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+    }
+
+    function fkFormatTanggal(t) {
+
+        if (!t) return "-";
+
+        const p = String(t).split("-");
+
+        if (p.length !== 3) return String(t);
+
+        const bulan = [
+            "Januari",
+            "Februari",
+            "Maret",
+            "April",
+            "Mei",
+            "Juni",
+            "Juli",
+            "Agustus",
+            "September",
+            "Oktober",
+            "November",
+            "Desember"
+        ];
+
+        return Number(p[2]) + " " +
+            bulan[Number(p[1]) - 1] + " " +
+            p[0];
+    }
+
+    /* -----------------------------------------------------
+       LOGIN UI
+       ----------------------------------------------------- */
+
+    function fkShowLogin() {
+
+        let login =
+            document.getElementById("fkAdminLogin");
+
+        if (login) {
+            login.style.display = "flex";
+            return;
+        }
+
+        login = document.createElement("div");
+
+        login.id = "fkAdminLogin";
+
+        login.innerHTML = `
+            <div class="fk-login-card">
+
+                <div class="fk-login-logo">
+                    FK
+                </div>
+
+                <div class="fk-login-subtitle">
+                    HAIRSTUDIO & BARBERSHOP — ADMIN
+                </div>
+
+                <form id="fkAdminLoginForm">
+
+                    <label for="fkAdminEmail">
+                        EMAIL ADMIN
+                    </label>
+
+                    <input
+                        id="fkAdminEmail"
+                        type="email"
+                        autocomplete="username"
+                        placeholder="Email admin"
+                        required
+                    >
+
+                    <label for="fkAdminPassword">
+                        PASSWORD
+                    </label>
+
+                    <input
+                        id="fkAdminPassword"
+                        type="password"
+                        autocomplete="current-password"
+                        placeholder="Password"
+                        required
+                    >
+
+                    <button
+                        id="fkAdminLoginButton"
+                        class="fk-login-btn"
+                        type="submit"
+                    >
+                        LOGIN
+                    </button>
+
+                    <div id="fkLoginError"></div>
+
+                </form>
+
+            </div>
+        `;
+
+        document.body.appendChild(login);
+
+        const form =
+            document.getElementById(
+                "fkAdminLoginForm"
             );
-    });
 
-    const table =
-        document.getElementById("antreanTable");
+        form.addEventListener(
+            "submit",
+            async function (event) {
 
-    if(!sorted.length){
+                event.preventDefault();
 
-        table.innerHTML =
-            '<tr><td colspan="8">' +
-            '<div class="empty">' +
-            'Tidak ada antrean pada tanggal ini.' +
-            '</div>' +
-            '</td></tr>';
+                const email =
+                    document
+                        .getElementById("fkAdminEmail")
+                        .value
+                        .trim();
 
-    }else{
+                const password =
+                    document
+                        .getElementById("fkAdminPassword")
+                        .value;
 
-        table.innerHTML =
-            sorted.map(function(x){
+                const button =
+                    document
+                        .getElementById("fkAdminLoginButton");
 
-                let action="";
+                const errorBox =
+                    document
+                        .getElementById("fkLoginError");
 
-                if(x.status==="Menunggu"){
+                errorBox.style.display = "none";
 
-                    action =
-                        '<button class="action btn-call" onclick="fkPanggil(\''+
-                        x.id+
-                        '\')">Panggil</button>';
+                button.disabled = true;
+                button.textContent = "MEMPROSES...";
+
+                const result =
+                    await FKDB.auth.signInWithPassword({
+                        email,
+                        password
+                    });
+
+                if (result.error) {
+
+                    errorBox.textContent =
+                        result.error.message ||
+                        "Login gagal.";
+
+                    errorBox.style.display = "block";
+
+                    button.disabled = false;
+                    button.textContent = "LOGIN";
+
+                    return;
                 }
 
-                if(x.status==="Dipanggil"){
+                login.style.display = "none";
 
-                    action =
-                        '<button class="action btn-start" onclick="fkMulai(\''+
-                        x.id+
-                        '\')">Mulai</button>';
-                }
-
-                if(x.status==="Sedang Dilayani"){
-
-                    action =
-                        '<button class="action btn-done" onclick="fkSelesai(\''+
-                        x.id+
-                        '\')">Selesai</button>';
-                }
-
-                if(
-                    x.status!=="Selesai" &&
-                    x.status!=="Batal"
-                ){
-
-                    action +=
-                        '<button class="action btn-cancel" onclick="fkBatal(\''+
-                        x.id+
-                        '\')">Batal</button>';
-                }
-
-                if(x.status==="Batal"){
-
-                    action =
-                        '<button class="action btn-reset" onclick="fkBukaLagi(\''+
-                        x.id+
-                        '\')">Buka Lagi</button>';
-                }
-
-                return (
-                    '<tr>' +
-
-                    '<td>'+fkEscape(x.nomor_antrean)+'</td>' +
-                    '<td>'+fkEscape(x.nama)+'</td>' +
-                    '<td>'+fkEscape(x.hp)+'</td>' +
-                    '<td>'+fkEscape(x.layanan)+'</td>' +
-                    '<td>'+fkEscape(x.jenis)+'</td>' +
-                    '<td>'+
-                    fkEscape(
-                        x.jam_booking
-                        ? String(x.jam_booking).substring(0,5)
-                        : "-"
-                    )+
-                    '</td>' +
-
-                    '<td>'+
-                    fkEscape(x.status)+
-                    '</td>' +
-
-                    '<td><div class="actions">'+
-                    action+
-                    '</div></td>' +
-
-                    '</tr>'
+                document.body.classList.remove(
+                    "fk-auth-loading"
                 );
 
-            }).join("");
+                document.documentElement.classList.remove(
+                    "fk-auth-loading"
+                );
+
+                await fkStartAdmin();
+            }
+        );
     }
 
-    const serviceCount={};
+    /* -----------------------------------------------------
+       REQUIRE ADMIN LOGIN
+       ----------------------------------------------------- */
 
-    selesai.forEach(function(x){
+    async function fkRequireAdmin() {
 
-        serviceCount[x.layanan] =
-            (serviceCount[x.layanan]||0)+1;
-    });
+        const {
+            data,
+            error
+        } = await FKDB.auth.getSession();
 
-    const services =
-        Object.entries(serviceCount)
-            .sort((a,b)=>b[1]-a[1]);
+        if (error) {
 
-    document.getElementById("layananList").innerHTML =
-        services.length
-        ? services.map(function(x){
-
-            return (
-                '<div class="service-row">' +
-                '<span>'+fkEscape(x[0])+'</span>' +
-                '<span class="service-count">'+
-                x[1]+'x</span>' +
-                '</div>'
+            console.error(
+                "[AUTH] Gagal membaca session:",
+                error
             );
 
-        }).join("")
-        : '<div class="empty">Belum ada transaksi selesai.</div>';
-}
+            fkShowLogin();
 
-/* ==================================================
-   STATUS UPDATE
-================================================== */
+            return false;
+        }
 
-async function fkUpdateStatus(id,status){
+        if (!data || !data.session) {
 
-    const now=new Date().toISOString();
+            fkShowLogin();
 
-    const patch={
-        status:status
-    };
+            return false;
+        }
 
-    if(status==="Dipanggil")
-        patch.dipanggil_pada=now;
-
-    if(status==="Sedang Dilayani")
-        patch.mulai_pada=now;
-
-    if(status==="Selesai")
-        patch.selesai_pada=now;
-
-    if(status==="Batal")
-        patch.dibatalkan_pada=now;
-
-    if(status==="Menunggu"){
-
-        patch.dipanggil_pada=null;
-        patch.mulai_pada=null;
-        patch.selesai_pada=null;
-        patch.dibatalkan_pada=null;
-    }
-
-    const {error} =
-        await FKDB
-            .from("bookings")
-            .update(patch)
-            .eq("id",id);
-
-    if(error){
-
-        alert(
-            "Gagal memperbarui status:\n"+
-            error.message
+        document.body.classList.remove(
+            "fk-auth-loading"
         );
 
-        return;
+        document.documentElement.classList.remove(
+            "fk-auth-loading"
+        );
+
+        return true;
     }
 
-    await fkLoadAdmin();
-}
+    window.fkRequireAdmin = fkRequireAdmin;
 
-function fkFind(id){
+    /* -----------------------------------------------------
+       LOAD DATA SUPABASE
+       ----------------------------------------------------- */
 
-    return fkAdminData.find(
-        x=>x.id===id
-    );
-}
+    async function fkLoadAdmin() {
 
-async function fkPanggil(id){
-
-    if(!fkFind(id)) return;
-
-    await fkUpdateStatus(
-        id,
-        "Dipanggil"
-    );
-}
-
-async function fkMulai(id){
-
-    const current =
-        fkFind(id);
-
-    if(!current) return;
-
-    const ada =
-        fkAdminData.some(function(x){
-
-            return (
-                x.id!==id &&
-                x.tanggal===current.tanggal &&
-                x.status==="Sedang Dilayani"
+        const tanggalInput =
+            document.getElementById(
+                "tanggalLaporan"
             );
+
+        const tanggal =
+            tanggalInput?.value || fkToday();
+
+        const result =
+            await FKDB
+                .from("bookings")
+                .select("*")
+                .order("tanggal", {
+                    ascending: false
+                })
+                .order("dibuat_pada", {
+                    ascending: false
+                });
+
+        if (result.error) {
+
+            console.error(
+                "[FKDB] Load bookings gagal:",
+                result.error
+            );
+
+            alert(
+                "Gagal mengambil data antrean:\n" +
+                result.error.message
+            );
+
+            return;
+        }
+
+        fkAdminData =
+            Array.isArray(result.data)
+                ? result.data
+                : [];
+
+        fkRenderAdmin(tanggal);
+    }
+
+    /* -----------------------------------------------------
+       RENDER DASHBOARD
+       ----------------------------------------------------- */
+
+    function fkRenderAdmin(tanggal) {
+
+        const hari =
+            fkAdminData.filter(function (x) {
+                return x.tanggal === tanggal;
+            });
+
+        const selesai =
+            hari.filter(function (x) {
+                return x.status === "Selesai";
+            });
+
+        const uniquePhones =
+            new Set(
+                hari
+                    .map(function (x) {
+                        return fkNorm(x.hp);
+                    })
+                    .filter(Boolean)
+            );
+
+        document.getElementById("total").textContent =
+            uniquePhones.size;
+
+        document.getElementById("menunggu").textContent =
+            hari.filter(function (x) {
+                return (
+                    x.status === "Menunggu" ||
+                    x.status === "Dipanggil"
+                );
+            }).length;
+
+        document.getElementById("selesai").textContent =
+            selesai.length;
+
+        document.getElementById("pendapatan").textContent =
+            fkRupiah(
+                selesai.reduce(function (total, x) {
+                    return total + Number(x.harga || 0);
+                }, 0)
+            );
+
+        const allPhones = {};
+
+        fkAdminData.forEach(function (x) {
+
+            const hp = fkNorm(x.hp);
+
+            if (hp) {
+                allPhones[hp] =
+                    (allPhones[hp] || 0) + 1;
+            }
         });
 
-    if(ada){
+        let customerBaru = 0;
+        let customerLama = 0;
 
-        alert(
-            "Masih ada pelanggan lain yang sedang dilayani."
-        );
+        uniquePhones.forEach(function (hp) {
 
-        return;
-    }
+            if (allPhones[hp] === 1) {
+                customerBaru++;
+            } else if (allPhones[hp] > 1) {
+                customerLama++;
+            }
+        });
 
-    await fkUpdateStatus(
-        id,
-        "Sedang Dilayani"
-    );
-}
+        document.getElementById("customerBaru")
+            .textContent = customerBaru;
 
-async function fkSelesai(id){
+        document.getElementById("customerLama")
+            .textContent = customerLama;
 
-    await fkUpdateStatus(
-        id,
-        "Selesai"
-    );
-}
+        document.getElementById("tanggalDisplay")
+            .textContent = fkFormatTanggal(tanggal);
 
-async function fkBatal(id){
+        /* -------------------------------------------------
+           CURRENT CUSTOMER
+           ------------------------------------------------- */
 
-    const x=fkFind(id);
+        const current =
+            hari.find(function (x) {
+                return x.status === "Sedang Dilayani";
+            });
 
-    if(!x) return;
+        const currentBox =
+            document.getElementById(
+                "currentCustomer"
+            );
 
-    if(!confirm(
-        "Batalkan antrean "+
-        x.nomor_antrean+
-        "?"
-    )) return;
+        if (current) {
 
-    await fkUpdateStatus(
-        id,
-        "Batal"
-    );
-}
+            const jam =
+                current.jam_booking
+                    ? String(
+                        current.jam_booking
+                    ).substring(0, 5)
+                    : "";
 
-async function fkBukaLagi(id){
+            currentBox.innerHTML =
+                '<div class="current-box">' +
+                    '<div>' +
+                        '<div class="current-name">' +
+                            fkEscape(
+                                current.nomor_antrean
+                            ) +
+                            " — " +
+                            fkEscape(current.nama) +
+                        '</div>' +
 
-    await fkUpdateStatus(
-        id,
-        "Menunggu"
-    );
-}
+                        '<div class="current-meta">' +
+                            fkEscape(current.layanan) +
+                            " • " +
+                            fkEscape(current.jenis) +
+                            (
+                                jam
+                                ? " • " + fkEscape(jam)
+                                : ""
+                            ) +
+                        '</div>' +
+                    '</div>' +
 
-/* ==================================================
-   AUTO REFRESH
-================================================== */
+                    '<button class="action btn-done" ' +
+                        'onclick="fkSelesai(\'' +
+                        current.id +
+                        '\')">' +
+                        'Selesai' +
+                    '</button>' +
 
-let fkRefreshTimer = null;
+                '</div>';
 
-function fkStartAutoRefresh(){
+        } else {
 
-    if(fkRefreshTimer)
-        clearInterval(fkRefreshTimer);
+            currentBox.innerHTML =
+                '<div class="empty">' +
+                'Belum ada pelanggan yang sedang dilayani.' +
+                '</div>';
+        }
 
-    fkRefreshTimer =
-        setInterval(
-            async function(){
+        /* -------------------------------------------------
+           QUEUE
+           ------------------------------------------------- */
 
-                const session =
-                    await FKDB.auth.getSession();
+        const antrean =
+            [...hari].sort(function (a, b) {
 
-                if(session?.data?.session){
+                if (
+                    a.status === "Batal" &&
+                    b.status !== "Batal"
+                ) return 1;
 
-                    await fkLoadAdmin();
+                if (
+                    a.status !== "Batal" &&
+                    b.status === "Batal"
+                ) return -1;
 
+                if (
+                    a.jenis === "Booking" &&
+                    b.jenis === "Booking"
+                ) {
+
+                    return String(
+                        a.jam_booking || "99:99"
+                    ).localeCompare(
+                        String(
+                            b.jam_booking || "99:99"
+                        )
+                    );
                 }
 
-            },
-            5000
-        );
-}
+                if (a.jenis === "Booking") return -1;
+                if (b.jenis === "Booking") return 1;
 
+                return String(
+                    a.dibuat_pada || ""
+                ).localeCompare(
+                    String(
+                        b.dibuat_pada || ""
+                    )
+                );
+            });
 
-/* ==================================================
-   REALTIME
-================================================== */
-
-function fkRealtime(){
-
-    FKDB
-        .channel("fk-bookings-admin")
-        .on(
-            "postgres_changes",
-            {
-                event:"*",
-                schema:"public",
-                table:"bookings"
-            },
-            function(){
-                fkLoadAdmin();
-            }
-        )
-        .subscribe();
-}
-
-/* ==================================================
-   LOGOUT
-================================================== */
-
-async function fkLogout(){
-
-    await FKDB.auth.signOut();
-
-    location.reload();
-}
-
-/* ==================================================
-   START
-================================================== */
-
-document.addEventListener(
-    "DOMContentLoaded",
-    async function(){
-
-        const ok =
-            await fkRequireAdmin();
-
-        if(!ok) return;
-
-        document
-            .getElementById("tanggalLaporan")
-            ?.addEventListener(
-                "change",
-                fkLoadAdmin
+        const table =
+            document.getElementById(
+                "antreanTable"
             );
+
+        if (!antrean.length) {
+
+            table.innerHTML =
+                '<tr>' +
+                    '<td colspan="8">' +
+                        '<div class="empty">' +
+                            'Tidak ada antrean pada tanggal ini.' +
+                        '</div>' +
+                    '</td>' +
+                '</tr>';
+
+        } else {
+
+            table.innerHTML =
+                antrean.map(function (x) {
+
+                    let action = "";
+
+                    if (x.status === "Menunggu") {
+
+                        action =
+                            '<button class="action btn-call" ' +
+                            'onclick="fkPanggil(\'' +
+                            x.id +
+                            '\')">' +
+                            'Panggil' +
+                            '</button>' +
+
+                            '<button class="action btn-cancel" ' +
+                            'onclick="fkBatal(\'' +
+                            x.id +
+                            '\')">' +
+                            'Batal' +
+                            '</button>';
+                    }
+
+                    if (x.status === "Dipanggil") {
+
+                        action =
+                            '<button class="action btn-start" ' +
+                            'onclick="fkMulai(\'' +
+                            x.id +
+                            '\')">' +
+                            'Mulai' +
+                            '</button>' +
+
+                            '<button class="action btn-cancel" ' +
+                            'onclick="fkBatal(\'' +
+                            x.id +
+                            '\')">' +
+                            'Batal' +
+                            '</button>';
+                    }
+
+                    if (
+                        x.status ===
+                        "Sedang Dilayani"
+                    ) {
+
+                        action =
+                            '<button class="action btn-done" ' +
+                            'onclick="fkSelesai(\'' +
+                            x.id +
+                            '\')">' +
+                            'Selesai' +
+                            '</button>';
+                    }
+
+                    if (x.status === "Selesai") {
+
+                        action =
+                            '<button class="action btn-reset" ' +
+                            'onclick="fkBukaLagi(\'' +
+                            x.id +
+                            '\')">' +
+                            'Buka Lagi' +
+                            '</button>';
+                    }
+
+                    if (x.status === "Batal") {
+
+                        action =
+                            '<button class="action btn-reset" ' +
+                            'onclick="fkBukaLagi(\'' +
+                            x.id +
+                            '\')">' +
+                            'Aktifkan' +
+                            '</button>';
+                    }
+
+                    const jam =
+                        x.jam_booking
+                            ? String(
+                                x.jam_booking
+                            ).substring(0, 5)
+                            : "-";
+
+                    return (
+                        '<tr>' +
+
+                        '<td>' +
+                            fkEscape(
+                                x.nomor_antrean
+                            ) +
+                        '</td>' +
+
+                        '<td>' +
+                            fkEscape(x.nama) +
+                        '</td>' +
+
+                        '<td>' +
+                            fkEscape(x.hp) +
+                        '</td>' +
+
+                        '<td>' +
+                            fkEscape(x.layanan) +
+                        '</td>' +
+
+                        '<td>' +
+                            fkEscape(x.jenis) +
+                        '</td>' +
+
+                        '<td>' +
+                            fkEscape(jam) +
+                        '</td>' +
+
+                        '<td>' +
+                            '<span class="status ' +
+                            String(
+                                x.status || ""
+                            )
+                                .toLowerCase()
+                                .replace(/\s+/g, "-") +
+                            '">' +
+                            fkEscape(
+                                x.status
+                            ) +
+                            '</span>' +
+                        '</td>' +
+
+                        '<td>' +
+                            '<div class="actions">' +
+                                action +
+                            '</div>' +
+                        '</td>' +
+
+                        '</tr>'
+                    );
+
+                }).join("");
+        }
+
+        /* -------------------------------------------------
+           SERVICE SUMMARY
+           ------------------------------------------------- */
+
+        const serviceCount = {};
+
+        selesai.forEach(function (x) {
+
+            const service =
+                x.layanan || "Lainnya";
+
+            serviceCount[service] =
+                (serviceCount[service] || 0) + 1;
+        });
+
+        const services =
+            Object.entries(serviceCount)
+                .sort(function (a, b) {
+                    return b[1] - a[1];
+                });
+
+        document.getElementById(
+            "layananList"
+        ).innerHTML =
+            services.length
+
+            ? services.map(function (x) {
+
+                return (
+                    '<div class="service-row">' +
+
+                        '<span>' +
+                            fkEscape(x[0]) +
+                        '</span>' +
+
+                        '<span class="service-count">' +
+                            x[1] +
+                            'x' +
+                        '</span>' +
+
+                    '</div>'
+                );
+
+            }).join("")
+
+            : '<div class="empty">' +
+              'Belum ada transaksi selesai.' +
+              '</div>';
+    }
+
+    /* -----------------------------------------------------
+       UPDATE STATUS
+       ----------------------------------------------------- */
+
+    async function fkUpdateStatus(
+        id,
+        status
+    ) {
+
+        const now =
+            new Date().toISOString();
+
+        const patch = {
+            status: status
+        };
+
+        if (status === "Dipanggil") {
+            patch.dipanggil_pada = now;
+        }
+
+        if (status === "Sedang Dilayani") {
+            patch.mulai_pada = now;
+        }
+
+        if (status === "Selesai") {
+            patch.selesai_pada = now;
+        }
+
+        if (status === "Batal") {
+            patch.dibatalkan_pada = now;
+        }
+
+        if (status === "Menunggu") {
+
+            patch.dipanggil_pada = null;
+            patch.mulai_pada = null;
+            patch.selesai_pada = null;
+            patch.dibatalkan_pada = null;
+        }
+
+        const result =
+            await FKDB
+                .from("bookings")
+                .update(patch)
+                .eq("id", id);
+
+        if (result.error) {
+
+            console.error(
+                "[FKDB] Update gagal:",
+                result.error
+            );
+
+            alert(
+                "Gagal memperbarui status:\n\n" +
+                result.error.message
+            );
+
+            return false;
+        }
+
+        await fkLoadAdmin();
+
+        return true;
+    }
+
+    function fkFind(id) {
+
+        return fkAdminData.find(function (x) {
+            return String(x.id) === String(id);
+        });
+    }
+
+    async function fkPanggil(id) {
+
+        if (!fkFind(id)) return;
+
+        await fkUpdateStatus(
+            id,
+            "Dipanggil"
+        );
+    }
+
+    async function fkMulai(id) {
+
+        const current =
+            fkFind(id);
+
+        if (!current) return;
+
+        const ada =
+            fkAdminData.some(function (x) {
+
+                return (
+                    String(x.id) !== String(id) &&
+                    x.tanggal === current.tanggal &&
+                    x.status === "Sedang Dilayani"
+                );
+            });
+
+        if (ada) {
+
+            alert(
+                "Masih ada pelanggan lain yang sedang dilayani."
+            );
+
+            return;
+        }
+
+        await fkUpdateStatus(
+            id,
+            "Sedang Dilayani"
+        );
+    }
+
+    async function fkSelesai(id) {
+
+        await fkUpdateStatus(
+            id,
+            "Selesai"
+        );
+    }
+
+    async function fkBatal(id) {
+
+        const x =
+            fkFind(id);
+
+        if (!x) return;
+
+        if (!confirm(
+            "Batalkan antrean " +
+            x.nomor_antrean +
+            "?"
+        )) {
+            return;
+        }
+
+        await fkUpdateStatus(
+            id,
+            "Batal"
+        );
+    }
+
+    async function fkBukaLagi(id) {
+
+        await fkUpdateStatus(
+            id,
+            "Menunggu"
+        );
+    }
+
+    window.fkPanggil = fkPanggil;
+    window.fkMulai = fkMulai;
+    window.fkSelesai = fkSelesai;
+    window.fkBatal = fkBatal;
+    window.fkBukaLagi = fkBukaLagi;
+
+    /* -----------------------------------------------------
+       REALTIME
+       ----------------------------------------------------- */
+
+    function fkRealtime() {
+
+        if (fkRealtimeChannel) {
+            FKDB.removeChannel(
+                fkRealtimeChannel
+            );
+        }
+
+        fkRealtimeChannel =
+            FKDB
+                .channel(
+                    "fk-bookings-admin"
+                )
+                .on(
+                    "postgres_changes",
+                    {
+                        event: "*",
+                        schema: "public",
+                        table: "bookings"
+                    },
+                    function () {
+                        fkLoadAdmin();
+                    }
+                )
+                .subscribe();
+
+        console.log(
+            "[REALTIME] Admin channel aktif."
+        );
+    }
+
+    /* -----------------------------------------------------
+       LOGOUT
+       ----------------------------------------------------- */
+
+    async function fkLogout() {
+
+        const result =
+            await FKDB.auth.signOut();
+
+        if (result.error) {
+
+            alert(
+                "Logout gagal:\n" +
+                result.error.message
+            );
+
+            return;
+        }
+
+        location.reload();
+    }
+
+    window.fkLogout = fkLogout;
+
+    /* -----------------------------------------------------
+       START DASHBOARD
+       ----------------------------------------------------- */
+
+    async function fkStartAdmin() {
+
+        if (fkStarted) return;
+
+        fkStarted = true;
 
         const tanggal =
             document.getElementById(
                 "tanggalLaporan"
             );
 
-        if(tanggal){
-            tanggal.value=fkToday();
+        if (tanggal) {
+
+            tanggal.value =
+                fkToday();
+
+            tanggal.addEventListener(
+                "change",
+                fkLoadAdmin
+            );
         }
 
         await fkLoadAdmin();
@@ -1479,42 +1609,106 @@ document.addEventListener(
         fkRealtime();
 
         const topbar =
-            document.querySelector(".topbar");
+            document.querySelector(
+                ".topbar"
+            );
 
-        if(topbar &&
-           !document.getElementById("fkLogoutBtn")){
+        if (
+            topbar &&
+            !document.getElementById(
+                "fkLogoutBtn"
+            )
+        ) {
 
             const btn =
-                document.createElement("button");
+                document.createElement(
+                    "button"
+                );
 
-            btn.id="fkLogoutBtn";
+            btn.id =
+                "fkLogoutBtn";
 
-            btn.textContent="LOGOUT";
+            btn.textContent =
+                "LOGOUT";
 
             btn.style.cssText =
-                "margin-left:10px;padding:8px 12px;" +
-                "background:#29292e;color:#aaa;" +
-                "border:1px solid #333;border-radius:7px;" +
-                "cursor:pointer;font-size:10px;";
+                "margin-left:10px;" +
+                "padding:8px 12px;" +
+                "background:#29292e;" +
+                "color:#aaa;" +
+                "border:1px solid #333;" +
+                "border-radius:7px;" +
+                "cursor:pointer;" +
+                "font-size:10px;";
 
-            btn.onclick=fkLogout;
+            btn.onclick =
+                fkLogout;
 
             topbar.appendChild(btn);
         }
     }
-);
 
+    /* -----------------------------------------------------
+       INITIAL AUTH CHECK
+       ----------------------------------------------------- */
+
+    document.addEventListener(
+        "DOMContentLoaded",
+        async function () {
+
+            const ok =
+                await fkRequireAdmin();
+
+            if (ok) {
+                await fkStartAdmin();
+            }
+        }
+    );
+
+    /* -----------------------------------------------------
+       AUTH STATE CHANGE
+       ----------------------------------------------------- */
+
+    FKDB.auth.onAuthStateChange(
+        function (event, session) {
+
+            console.log(
+                "[AUTH]",
+                event
+            );
+
+            if (
+                event === "SIGNED_OUT" ||
+                !session
+            ) {
+
+                fkStarted = false;
+
+                const login =
+                    document.getElementById(
+                        "fkAdminLogin"
+                    );
+
+                if (login) {
+                    login.style.display =
+                        "flex";
+                } else {
+                    fkShowLogin();
+                }
+
+                document.body.classList.add(
+                    "fk-auth-loading"
+                );
+
+                document.documentElement.classList.add(
+                    "fk-auth-loading"
+                );
+            }
+        }
+    );
+
+})();
 </script>
+
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
