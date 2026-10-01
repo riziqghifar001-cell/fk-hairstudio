@@ -464,47 +464,7 @@ body.fk-auth-loading .main {
 }
 </style>
 
-<style id="fk-delete-button-style">
-.fk-delete-btn {
-    display:inline-flex;
-    align-items:center;
-    justify-content:center;
-    gap:6px;
-    min-width:42px;
-    height:38px;
-    padding:0 12px;
-    border:1px solid rgba(255,80,80,.35);
-    border-radius:10px;
-    background:rgba(150,20,20,.16);
-    color:#ff8a8a;
-    cursor:pointer;
-    font-size:14px;
-    transition:
-        background .2s ease,
-        border-color .2s ease,
-        transform .2s ease;
-}
-
-.fk-delete-btn:hover {
-    background:rgba(180,25,25,.30);
-    border-color:rgba(255,100,100,.65);
-    transform:translateY(-1px);
-}
-
-.fk-delete-btn:active {
-    transform:translateY(0);
-}
-
-.fk-delete-icon {
-    font-size:16px;
-    line-height:1;
-}
-
-.fk-delete-text {
-    font-size:12px;
-    font-weight:600;
-}
-</style></head>
+</head>
 
 <body>
 
@@ -1283,16 +1243,7 @@ Belum ada pelanggan yang sedang dilayani.
                             x.id +
                             '\')">' +
                             'Batal' +
-                            '</button>
-<button
-    type="button"
-    class="fk-delete-btn"
-    title="Hapus antrean"
-    onclick="fkHapus('${item.id}', '${String(item.nomor_antrean || "").replace(/'/g, "\\'")}')"
->
-    <span class="fk-delete-icon">🗑</span>
-    <span class="fk-delete-text">Hapus</span>
-</button>';
+                            '</button>';
                     }
 
                     if (x.status === "Dipanggil") {
@@ -2116,5 +2067,4 @@ window.fkSaveService = fkSaveService;</script>
 
 </body>
 </html>
-
 
