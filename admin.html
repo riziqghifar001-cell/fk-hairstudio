@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#0b0b0d">
 
-<title>FK Admin — Dashboard</title>
+<title>FK Admin â€” Dashboard</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 
@@ -675,7 +675,7 @@ Belum ada pelanggan yang sedang dilayani.
 
 <script>
 /* =========================================================
-   FK ADMIN — SUPABASE SINGLE CLIENT
+   FK ADMIN â€” SUPABASE SINGLE CLIENT
    ========================================================= */
 
 (function () {
@@ -827,7 +827,7 @@ Belum ada pelanggan yang sedang dilayani.
                 </div>
 
                 <div class="fk-login-subtitle">
-                    HAIRSTUDIO & BARBERSHOP — ADMIN
+                    HAIRSTUDIO & BARBERSHOP â€” ADMIN
                 </div>
 
                 <form id="fkAdminLoginForm">
@@ -1143,17 +1143,17 @@ Belum ada pelanggan yang sedang dilayani.
                             fkEscape(
                                 current.nomor_antrean
                             ) +
-                            " — " +
+                            " â€” " +
                             fkEscape(current.nama) +
                         '</div>' +
 
                         '<div class="current-meta">' +
                             fkEscape(current.layanan) +
-                            " • " +
+                            " â€¢ " +
                             fkEscape(current.jenis) +
                             (
                                 jam
-                                ? " • " + fkEscape(jam)
+                                ? " â€¢ " + fkEscape(jam)
                                 : ""
                             ) +
                         '</div>' +
@@ -1319,7 +1319,7 @@ Belum ada pelanggan yang sedang dilayani.
         '\', \'' +
         String(x.nomor_antrean || "").replace(/'/g, "\\'") +
         '\')">' +
-        '<span class="fk-delete-icon">🗑</span>' +
+        '<span class="fk-delete-icon">ðŸ—‘</span>' +
         'Hapus' +
         '</button>';
 }
@@ -1812,7 +1812,7 @@ async function fkHapus(id, nomorAntrean) {
 
         alert("Antrean " + nomor + " berhasil dihapus.");
 
-        await fkLoadAdmin();
+        window.location.reload();
 
     } catch (err) {
         console.error("FK DELETE ERROR:", err);
@@ -2055,7 +2055,7 @@ async function fkSaveService(id, button) {
         }
 
         if (message) {
-            message.textContent = "Tersimpan ✓";
+            message.textContent = "Tersimpan âœ“";
         }
 
         setTimeout(function() {
