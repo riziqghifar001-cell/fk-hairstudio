@@ -1711,6 +1711,242 @@ const FKDB = window.supabase.createClient(
 
 const FK_ADMIN_WA = "628879800000";
 </script>
+<style id="fk-premium-motion">
+
+html{
+    scroll-behavior:smooth;
+}
+
+body{
+    overflow-x:hidden;
+}
+
+.fk-reveal{
+    opacity:0;
+    transform:translateY(28px);
+    transition:
+        opacity .75s cubic-bezier(.22,1,.36,1),
+        transform .75s cubic-bezier(.22,1,.36,1);
+}
+
+.fk-reveal.fk-visible{
+    opacity:1;
+    transform:none;
+}
+
+header{
+    transition:
+        background .35s ease,
+        backdrop-filter .35s ease,
+        box-shadow .35s ease;
+}
+
+header.fk-scrolled{
+    background:rgba(10,10,10,.82);
+    backdrop-filter:blur(18px);
+    -webkit-backdrop-filter:blur(18px);
+    box-shadow:0 8px 30px rgba(0,0,0,.18);
+}
+
+header nav a{
+    transition:
+        color .25s ease,
+        opacity .25s ease,
+        transform .25s ease;
+}
+
+header nav a:hover{
+    transform:translateY(-1px);
+}
+
+.btn{
+    transition:
+        transform .25s cubic-bezier(.22,1,.36,1),
+        box-shadow .25s ease,
+        background .25s ease,
+        border-color .25s ease;
+}
+
+.btn:hover{
+    transform:translateY(-3px);
+}
+
+.btn:active{
+    transform:translateY(-1px) scale(.985);
+}
+
+.why-card,
+.service-card,
+.need-btn{
+    transition:
+        transform .35s cubic-bezier(.22,1,.36,1),
+        border-color .35s ease,
+        background .35s ease,
+        box-shadow .35s ease;
+}
+
+.why-card:hover,
+.service-card:hover,
+.need-btn:hover{
+    transform:translateY(-5px);
+    box-shadow:0 14px 34px rgba(0,0,0,.12);
+}
+
+.look-grid img,
+.look-card img,
+.look-item img{
+    transition:
+        transform .8s cubic-bezier(.22,1,.36,1),
+        filter .5s ease;
+}
+
+.look-grid a:hover img,
+.look-card:hover img,
+.look-item:hover img{
+    transform:scale(1.045);
+}
+
+.service-tab{
+    transition:
+        color .3s ease,
+        background .3s ease,
+        transform .25s ease;
+}
+
+.service-tab:hover{
+    transform:translateY(-2px);
+}
+
+.service-tab::after{
+    content:"";
+    position:absolute;
+    left:50%;
+    bottom:-1px;
+    width:0;
+    height:1px;
+    background:currentColor;
+    transform:translateX(-50%);
+    transition:width .3s ease;
+}
+
+.service-tab:hover::after,
+.service-tab.active::after{
+    width:55%;
+}
+
+.service-old{
+    text-decoration:line-through;
+    opacity:.48;
+    margin-right:5px;
+}
+
+.promo-label{
+    display:block;
+    margin-top:5px;
+    font-size:8px;
+    letter-spacing:.14em;
+    font-weight:800;
+    opacity:.75;
+}
+
+.fk-ticket{
+    animation:fkTicketIn .65s cubic-bezier(.22,1,.36,1) both;
+}
+
+@keyframes fkTicketIn{
+
+    from{
+        opacity:0;
+        transform:translateY(20px) scale(.97);
+    }
+
+    to{
+        opacity:1;
+        transform:none;
+    }
+
+}
+
+.hero-content{
+    animation:fkHeroIn 1s cubic-bezier(.22,1,.36,1) both;
+}
+
+.hero h1{
+    animation:fkHeroTitle 1s .12s cubic-bezier(.22,1,.36,1) both;
+}
+
+.hero-desc{
+    animation:fkHeroDesc .8s .25s cubic-bezier(.22,1,.36,1) both;
+}
+
+.hero-actions{
+    animation:fkHeroDesc .8s .35s cubic-bezier(.22,1,.36,1) both;
+}
+
+@keyframes fkHeroIn{
+
+    from{
+        opacity:0;
+        transform:translateY(20px);
+    }
+
+    to{
+        opacity:1;
+        transform:none;
+    }
+
+}
+
+@keyframes fkHeroTitle{
+
+    from{
+        opacity:0;
+        transform:translateY(35px);
+    }
+
+    to{
+        opacity:1;
+        transform:none;
+    }
+
+}
+
+@keyframes fkHeroDesc{
+
+    from{
+        opacity:0;
+        transform:translateY(18px);
+    }
+
+    to{
+        opacity:1;
+        transform:none;
+    }
+
+}
+
+@media(prefers-reduced-motion:reduce){
+
+    *,
+    *::before,
+    *::after{
+        animation-duration:.01ms !important;
+        animation-iteration-count:1 !important;
+        transition-duration:.01ms !important;
+        scroll-behavior:auto !important;
+    }
+
+}
+
+@media(max-width:700px){
+
+    .fk-reveal{
+        transform:translateY(18px);
+    }
+
+}
+
+</style>
 </head>
 
 <body>
@@ -4870,8 +5106,138 @@ document.addEventListener(
 );
 
 </script>
+<script id="fk-premium-motion-js">
+
+(function(){
+
+    "use strict";
+
+    function initFKMotion(){
+
+        /* NAVBAR */
+
+        const header = document.querySelector("header");
+
+        if(header){
+
+            const updateHeader = function(){
+
+                if(window.scrollY > 30){
+                    header.classList.add("fk-scrolled");
+                }else{
+                    header.classList.remove("fk-scrolled");
+                }
+
+            };
+
+            updateHeader();
+
+            window.addEventListener(
+                "scroll",
+                updateHeader,
+                {passive:true}
+            );
+
+        }
+
+
+        /* SCROLL REVEAL */
+
+        const selectors = [
+            ".section-head",
+            ".why-card",
+            ".look-grid > *",
+            ".look-card",
+            ".look-item",
+            ".service-card",
+            ".choose-box",
+            ".need-btn",
+            "#booking .section-head",
+            "#booking .fk-booking-steps > *",
+            ".location-card",
+            ".faq-item"
+        ];
+
+        const elements = [];
+
+        selectors.forEach(function(selector){
+
+            document.querySelectorAll(selector).forEach(function(el){
+
+                if(!el.classList.contains("fk-reveal")){
+                    el.classList.add("fk-reveal");
+                }
+
+                elements.push(el);
+
+            });
+
+        });
+
+
+        if(!("IntersectionObserver" in window)){
+
+            elements.forEach(function(el){
+                el.classList.add("fk-visible");
+            });
+
+            return;
+
+        }
+
+
+        const observer = new IntersectionObserver(
+            function(entries){
+
+                entries.forEach(function(entry){
+
+                    if(!entry.isIntersecting){
+                        return;
+                    }
+
+                    entry.target.classList.add("fk-visible");
+
+                    observer.unobserve(entry.target);
+
+                });
+
+            },
+            {
+                threshold:.12,
+                rootMargin:"0px 0px -40px 0px"
+            }
+        );
+
+
+        elements.forEach(function(el){
+
+            observer.observe(el);
+
+        });
+
+    }
+
+
+    if(document.readyState === "loading"){
+
+        document.addEventListener(
+            "DOMContentLoaded",
+            initFKMotion,
+            {once:true}
+        );
+
+    }else{
+
+        initFKMotion();
+
+    }
+
+})();
+
+</script>
 </body>
 </html>
+
 
 
 
