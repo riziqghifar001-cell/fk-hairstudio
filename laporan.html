@@ -251,23 +251,6 @@ grid-template-columns:1fr 1fr
 }
 }
 </style>
-    <script>
-        (function initFKDB() {
-            const FK_SUPABASE_URL = "https://udqjramwhlptobfsmepx.supabase.co";
-            const FK_SUPABASE_KEY = "sb_publishable_vTNsdoG9reqGF8vdgoN-Tw_z4R_h4Yw";
-
-            function attachFKDB() {
-                if (window.supabase && window.supabase.createClient) {
-                    window.FKDB = window.supabase.createClient(FK_SUPABASE_URL, FK_SUPABASE_KEY);
-                    console.log("[FKDB] Initialized successfully as window.FKDB");
-                } else {
-                    console.warn("[FKDB] Waiting for Supabase SDK...");
-                    setTimeout(attachFKDB, 100);
-                }
-            }
-            attachFKDB();
-        })();
-    </script>
 </head>
 
 <body>
@@ -402,7 +385,318 @@ Tampilkan
 
 </main>
 
+<script>
 
+let data=[];
+
+
+function today(){
+
+const d=new Date();
+
+return d.getFullYear()+"-"+
+String(d.getMonth()+1).padStart(2,"0")+"-"+
+String(d.getDate()).padStart(2,"0");
+
+}
+
+function dateObj(date){
+
+const p=String(date).split("-");
+
+return new Date(
+Number(p[0]),
+Number(p[1])-1,
+Number(p[2])
+);
+
+}
+
+function formatDate(d){
+
+return d.getFullYear()+"-"+
+String(d.getMonth()+1).padStart(2,"0")+"-"+
+String(d.getDate()).padStart(2,"0");
+
+}
+
+function formatTanggal(tanggal){
+
+if(!tanggal) return "-";
+
+const p=String(tanggal).split("-");
+
+if(p.length!==3) return String(tanggal);
+
+const bulan=[
+"Januari","Februari","Maret","April","Mei","Juni",
+"Juli","Agustus","September","Oktober","November","Desember"
+];
+
+return Number(p[2])+" "+bulan[Number(p[1])-1]+" "+p[0];
+
+}
+
+function norm(hp){
+
+let x=String(hp||"").replace(/\D/g,"");
+
+if(x.startsWith("62")){
+x="0"+x.substring(2);
+}
+
+return x;
+
+}
+
+function rupiah(n){
+
+return new Intl.NumberFormat("id-ID",{
+style:"currency",
+currency:"IDR",
+maximumFractionDigits:0
+}).format(Number(n)||0);
+
+}
+
+function escapeHTML(value){
+
+return String(value??"")
+.replace(/&/g,"&amp;")
+.replace(/</g,"&lt;")
+.replace(/>/g,"&gt;")
+.replace(/"/g,"&quot;")
+.replace(/'/g,"&#039;");
+
+}
+
+function clock(){
+
+document.getElementById("clock").textContent=
+new Date().toLocaleTimeString("id-ID",{
+hour:"2-digit",
+minute:"2-digit",
+second:"2-digit"
+});
+
+}
+
+setInterval(clock,1000);
+clock();
+
+function getRange(){
+
+const mode=
+document.getElementById("periode").value;
+
+const now=dateObj(today());
+
+if(mode==="hari"){
+return [today(),today()];
+}
+
+if(mode==="kemarin"){
+
+const d=new Date(now);
+
+d.setDate(d.getDate()-1);
+
+const x=formatDate(d);
+
+return [x,x];
+
+}
+
+if(mode==="minggu"){
+
+const start=new Date(now);
+
+start.setDate(start.getDate()-6);
+
+return [
+formatDate(start),
+today()
+];
+
+}
+
+if(mode==="bulan"){
+
+const start=
+new Date(
+now.getFullYear(),
+now.getMonth(),
+1
+);
+
+return [
+formatDate(start),
+today()
+];
+
+}
+
+if(mode==="custom"){
+
+const x=
+document.getElementById("tanggal").value||
+today();
+
+return [x,x];
+
+}
+
+return [
+"0000-01-01",
+"9999-12-31"
+];
+
+}
+
+function ubahPeriode(){
+
+const custom=
+document.getElementById("periode").value==="custom";
+
+document.getElementById("tanggal").disabled=!custom;
+
+render();
+
+}
+
+function render(){
+
+const [start,end]=getRange();
+
+const filtered=
+data.filter(x=>
+String(x.tanggal)>=start&&
+String(x.tanggal)<=end
+);
+
+const selesai=
+filtered.filter(x=>x.status==="Selesai");
+
+const omzet=
+selesai.reduce(
+(a,b)=>a+Number(b.harga||0),
+0
+);
+
+const uniquePhones=
+new Set(
+filtered
+.map(x=>norm(x.hp))
+.filter(Boolean)
+);
+
+document.getElementById("omzet").textContent=
+rupiah(omzet);
+
+document.getElementById("pelanggan").textContent=
+uniquePhones.size;
+
+document.getElementById("transaksi").textContent=
+selesai.length;
+
+document.getElementById("rata").textContent=
+rupiah(
+selesai.length?
+omzet/selesai.length:
+0
+);
+
+const services={};
+
+selesai.forEach(x=>{
+
+services[x.layanan]=
+(services[x.layanan]||0)+1;
+
+});
+
+const serviceSorted=
+Object.entries(services)
+.sort((a,b)=>b[1]-a[1]);
+
+document.getElementById("services").innerHTML=
+serviceSorted.length?
+
+serviceSorted.map(x=>
+'<div class="service-row">'+
+'<span>'+escapeHTML(x[0])+'</span>'+
+'<strong>'+x[1]+'x</strong>'+
+'</div>'
+).join(""):
+
+'<div class="empty">Belum ada transaksi selesai.</div>';
+
+let baru=0;
+let lama=0;
+
+[...uniquePhones].forEach(phone=>{
+
+const semua=
+data.filter(x=>norm(x.hp)===phone);
+
+if(semua.length<=1){
+baru++;
+}else{
+lama++;
+}
+
+});
+
+document.getElementById("customerInfo").innerHTML=
+'<div class="service-row">'+
+'<span>Customer unik</span>'+
+'<strong>'+uniquePhones.size+'</strong>'+
+'</div>'+
+
+'<div class="service-row">'+
+'<span>Customer baru</span>'+
+'<strong>'+baru+'</strong>'+
+'</div>'+
+
+'<div class="service-row">'+
+'<span>Customer lama</span>'+
+'<strong>'+lama+'</strong>'+
+'</div>';
+
+const transactions=
+[...filtered].sort((a,b)=>
+String(b.tanggal).localeCompare(String(a.tanggal))||
+Number(b.id||0)-Number(a.id||0)
+);
+
+document.getElementById("transactions").innerHTML=
+transactions.length?
+
+transactions.map(x=>
+'<tr>'+
+'<td>'+escapeHTML(formatTanggal(x.tanggal))+'</td>'+
+'<td>'+escapeHTML(x.nomorAntrean)+'</td>'+
+'<td>'+escapeHTML(x.nama)+'</td>'+
+'<td>'+escapeHTML(x.layanan)+'</td>'+
+'<td>'+escapeHTML(x.jenis)+'</td>'+
+'<td>'+escapeHTML(x.status)+'</td>'+
+'<td>'+rupiah(x.harga)+'</td>'+
+'</tr>'
+).join(""):
+
+'<tr><td colspan="7">'+
+'<div class="empty">Tidak ada data pada periode ini.</div>'+
+'</td></tr>';
+
+}
+
+document.getElementById("tanggal").value=today();
+
+document.getElementById("tanggal").disabled=true;
+
+render();
+
+</script>
 
 <script id="fk-supabase-migration">
 
@@ -720,36 +1014,6 @@ async function render(){
         '</td></tr>';
 }
 
-
-// ============================================================
-// FK REALTIME - LAPORAN
-// ============================================================
-
-let fkReportChannel = null;
-
-function fkStartRealtime(){
-
-    if(fkReportChannel){
-        FKDB.removeChannel(fkReportChannel);
-    }
-
-    fkReportChannel =
-        FKDB
-            .channel("fk-report-realtime")
-            .on(
-                "postgres_changes",
-                {
-                    event:"*",
-                    schema:"public",
-                    table:"bookings"
-                },
-                function(){
-                    render();
-                }
-            )
-            .subscribe();
-}
-
 function fkShowLogin(){
 
     if(document.getElementById("fkAdminLogin"))
@@ -757,8 +1021,8 @@ function fkShowLogin(){
 
     const style=document.createElement("style");
 
-    style.textContent=
-        #fkAdminLogin{
+style.textContent=`
+#fkAdminLogin{
             position:fixed;
             inset:0;
             z-index:99999;
@@ -813,16 +1077,16 @@ function fkShowLogin(){
             font-size:11px;
             margin-top:12px
         }
-    ;
+`;
 
-    document.head.appendChild(style);
+document.head.appendChild(style);
 
     const box=document.createElement("div");
 
-    box.id="fkAdminLogin";
+box.id="fkAdminLogin";
 
-    box.innerHTML=
-        <div class="box">
+box.innerHTML=`
+<div class="box">
             <h2>FK ADMIN</h2>
             <p>Login untuk mengakses laporan FK Hairstudio.</p>
 
@@ -833,9 +1097,9 @@ function fkShowLogin(){
 
             <div id="fkAdminError"></div>
         </div>
-    ;
+`;
 
-    document.body.appendChild(box);
+document.body.appendChild(box);
 }
 
 async function fkLogin(){
@@ -894,9 +1158,35 @@ document.addEventListener(
     }
 );
 
-</script>
+
+/* FK REALTIME SYNC */
+if (window.FKDB) {
+    window.FKDB
+        .channel("fk-laporan-bookings")
+        .on(
+            "postgres_changes",
+            {
+                event: "*",
+                schema: "public",
+                table: "bookings"
+            },
+            function () {
+                if (typeof loadData === "function") {
+                    loadData();
+                } else if (typeof fkLoadReport === "function") {
+                    fkLoadReport();
+                } else if (typeof render === "function") {
+                    render();
+                }
+            }
+        )
+        .subscribe();
+}</script>
 </body>
 </html>
+
+
+
 
 
 
