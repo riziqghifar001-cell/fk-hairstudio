@@ -604,6 +604,57 @@ Belum ada pelanggan yang sedang dilayani.
 
 </div>
 
+<!-- FK SERVICE MANAGER -->
+<section
+    id="fkServiceManager"
+    style="
+        margin-top:28px;
+        padding:22px;
+        border:1px solid rgba(255,255,255,.10);
+        border-radius:18px;
+        background:rgba(255,255,255,.035);
+    "
+>
+    <div style="
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
+        gap:16px;
+        flex-wrap:wrap;
+    ">
+        <div>
+            <h2 style="margin:0 0 6px;">Kelola Harga Layanan</h2>
+            <p style="margin:0;opacity:.65;">
+                Harga normal = harga coret. Harga jual = harga customer.
+            </p>
+        </div>
+
+        <button
+            type="button"
+            onclick="fkLoadServices()"
+            style="
+                padding:10px 15px;
+                border-radius:10px;
+                cursor:pointer;
+            "
+        >
+            Refresh
+        </button>
+    </div>
+
+    <div
+        id="fkServiceList"
+        style="
+            display:grid;
+            gap:12px;
+            margin-top:20px;
+        "
+    >
+        <div style="opacity:.6;">
+            Memuat layanan...
+        </div>
+    </div>
+</section>
 </main>
 
 
@@ -1708,7 +1759,312 @@ Belum ada pelanggan yang sedang dilayani.
     );
 
 })();
-</script>
+/* FK TRUE DELETE BOOKING */
+async function fkHapus(id, nomorAntrean) {
+    if (!id) {
+        alert("ID antrean tidak ditemukan.");
+        return;
+    }
+
+    const nomor = nomorAntrean || "antrean ini";
+
+    if (!confirm(
+        "Hapus permanen " + nomor + "?\n\n" +
+        "Data akan benar-benar dihapus dari database dan tidak akan muncul lagi di Pelanggan maupun Laporan.\n\n" +
+        "Tindakan ini tidak bisa dibatalkan."
+    )) {
+        return;
+    }
+
+    try {
+        const result = await FKDB
+            .from("bookings")
+            .delete()
+            .eq("id", id);
+
+        if (result.error) {
+            throw result.error;
+        }
+
+        alert("Antrean " + nomor + " berhasil dihapus.");
+
+        await fkLoadAdmin();
+
+    } catch (err) {
+        console.error("FK DELETE ERROR:", err);
+
+        alert(
+            "Gagal menghapus antrean.\n\n" +
+            (err && err.message ? err.message : "Terjadi kesalahan.")
+        );
+    }
+}
+
+window.fkHapus = fkHapus;/* FK SERVICE PRICE MANAGER */
+
+function fkServiceEscape(value) {
+    return String(value == null ? "" : value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+}
+
+async function fkLoadServices() {
+
+    const container = document.getElementById("fkServiceList");
+
+    if (!container) {
+        return;
+    }
+
+    container.innerHTML =
+        '<div style="opacity:.6;">Memuat layanan...</div>';
+
+    try {
+
+        const result = await FKDB
+            .from("services")
+            .select("id,nama,harga_normal,harga_jual,aktif,urutan")
+            .order("urutan", { ascending: true })
+            .order("nama", { ascending: true });
+
+        if (result.error) {
+            throw result.error;
+        }
+
+        const services = result.data || [];
+
+        if (!services.length) {
+            container.innerHTML =
+                '<div style="opacity:.6;">Belum ada layanan.</div>';
+            return;
+        }
+
+        container.innerHTML = services.map(function(service) {
+
+            const normal = Number(service.harga_normal || 0);
+            const jual = Number(service.harga_jual || 0);
+
+            return `
+                <div
+                    data-service-id="${fkServiceEscape(service.id)}"
+                    style="
+                        display:grid;
+                        grid-template-columns:
+                            minmax(180px,1.5fr)
+                            repeat(2,minmax(120px,.7fr))
+                            auto auto;
+                        gap:10px;
+                        align-items:center;
+                        padding:14px;
+                        border:1px solid rgba(255,255,255,.08);
+                        border-radius:12px;
+                        background:rgba(0,0,0,.12);
+                    "
+                >
+
+                    <div>
+                        <strong>${fkServiceEscape(service.nama)}</strong>
+
+                        <div style="
+                            font-size:12px;
+                            opacity:.5;
+                            margin-top:4px;
+                        ">
+                            ${service.aktif ? "Aktif" : "Nonaktif"}
+                        </div>
+                    </div>
+
+                    <label style="font-size:12px;">
+                        Harga normal
+
+                        <input
+                            class="fk-service-normal"
+                            type="number"
+                            min="0"
+                            step="1000"
+                            value="${normal}"
+                            style="
+                                width:100%;
+                                box-sizing:border-box;
+                                margin-top:5px;
+                                padding:9px;
+                                border-radius:8px;
+                            "
+                        >
+                    </label>
+
+                    <label style="font-size:12px;">
+                        Harga jual
+
+                        <input
+                            class="fk-service-jual"
+                            type="number"
+                            min="0"
+                            step="1000"
+                            value="${jual}"
+                            style="
+                                width:100%;
+                                box-sizing:border-box;
+                                margin-top:5px;
+                                padding:9px;
+                                border-radius:8px;
+                            "
+                        >
+                    </label>
+
+                    <label style="
+                        display:flex;
+                        align-items:center;
+                        gap:6px;
+                        white-space:nowrap;
+                        font-size:13px;
+                    ">
+                        <input
+                            class="fk-service-aktif"
+                            type="checkbox"
+                            ${service.aktif ? "checked" : ""}
+                        >
+                        Aktif
+                    </label>
+
+                    <button
+                        type="button"
+                        onclick="fkSaveService('${fkServiceEscape(service.id)}', this)"
+                        style="
+                            padding:9px 13px;
+                            border-radius:8px;
+                            cursor:pointer;
+                        "
+                    >
+                        Simpan
+                    </button>
+
+                    <div
+                        class="fk-service-message"
+                        style="
+                            font-size:12px;
+                            min-width:90px;
+                        "
+                    ></div>
+
+                </div>
+            `;
+
+        }).join("");
+
+    } catch (err) {
+
+        console.error("FK SERVICE LOAD ERROR:", err);
+
+        container.innerHTML =
+            '<div style="color:#ff7b7b;">Gagal memuat layanan: ' +
+            fkServiceEscape(
+                err && err.message
+                    ? err.message
+                    : "Unknown error"
+            ) +
+            '</div>';
+    }
+}
+
+async function fkSaveService(id, button) {
+
+    const row = button.closest("[data-service-id]");
+
+    if (!row) {
+        return;
+    }
+
+    const normalInput =
+        row.querySelector(".fk-service-normal");
+
+    const jualInput =
+        row.querySelector(".fk-service-jual");
+
+    const aktifInput =
+        row.querySelector(".fk-service-aktif");
+
+    const message =
+        row.querySelector(".fk-service-message");
+
+    const hargaNormal =
+        Number(normalInput.value || 0);
+
+    const hargaJual =
+        Number(jualInput.value || 0);
+
+    const aktif =
+        !!aktifInput.checked;
+
+    if (!Number.isFinite(hargaNormal) || hargaNormal < 0) {
+        alert("Harga normal tidak valid.");
+        return;
+    }
+
+    if (!Number.isFinite(hargaJual) || hargaJual < 0) {
+        alert("Harga jual tidak valid.");
+        return;
+    }
+
+    button.disabled = true;
+
+    if (message) {
+        message.textContent = "Menyimpan...";
+    }
+
+    try {
+
+        const result = await FKDB
+            .from("services")
+            .update({
+                harga_normal: Math.round(hargaNormal),
+                harga_jual: Math.round(hargaJual),
+                aktif: aktif
+            })
+            .eq("id", id);
+
+        if (result.error) {
+            throw result.error;
+        }
+
+        if (message) {
+            message.textContent = "Tersimpan ✓";
+        }
+
+        setTimeout(function() {
+            if (message) {
+                message.textContent = "";
+            }
+        }, 2500);
+
+    } catch (err) {
+
+        console.error("FK SERVICE SAVE ERROR:", err);
+
+        if (message) {
+            message.textContent = "Gagal";
+        }
+
+        alert(
+            "Gagal menyimpan harga layanan.\n\n" +
+            (
+                err && err.message
+                    ? err.message
+                    : "Unknown error"
+            )
+        );
+
+    } finally {
+        button.disabled = false;
+    }
+}
+
+window.fkLoadServices = fkLoadServices;
+window.fkSaveService = fkSaveService;</script>
 
 </body>
 </html>
+

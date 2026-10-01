@@ -5292,9 +5292,186 @@ document.addEventListener("DOMContentLoaded", () => {
 
     console.log("[FK] Booking intro disembunyikan. Langsung ke pilihan layanan.");
 });
-</script>
+/* FK PUBLIC SERVICE PRICE SYNC */
+
+let FK_PUBLIC_SERVICES = [];
+
+function fkPublicRupiah(value) {
+    return "Rp" + Number(value || 0).toLocaleString("id-ID");
+}
+
+function fkApplyPublicServicePrices() {
+
+    const map = {};
+
+    FK_PUBLIC_SERVICES.forEach(function(service) {
+        map[
+            String(service.nama || "")
+                .trim()
+                .toUpperCase()
+        ] = service;
+    });
+
+    const select =
+        document.getElementById("layananSelect");
+
+    if (select) {
+
+        Array.from(select.options).forEach(function(option) {
+
+            const serviceName =
+                String(option.value || "")
+                    .split("|")[0]
+                    .trim()
+                    .toUpperCase();
+
+            const service = map[serviceName];
+
+            if (!service) {
+                return;
+            }
+
+            const normal =
+                Number(service.harga_normal || 0);
+
+            const jual =
+                Number(service.harga_jual || 0);
+
+            option.value =
+                service.nama + "|" + jual;
+
+            if (normal > jual && normal > 0) {
+
+                option.textContent =
+                    service.nama +
+                    " – " +
+                    fkPublicRupiah(jual) +
+                    " (Normal " +
+                    fkPublicRupiah(normal) +
+                    ")";
+
+            } else {
+
+                option.textContent =
+                    service.nama +
+                    " – " +
+                    fkPublicRupiah(jual);
+            }
+        });
+    }
+
+    /*
+      Update elemen harga pada kartu layanan
+      jika nama heading sama dengan nama service.
+    */
+
+    document.querySelectorAll(
+        ".service-card, .service-item, .service-box"
+    ).forEach(function(card) {
+
+        const heading =
+            card.querySelector(
+                "h1,h2,h3,h4,h5,h6,strong"
+            );
+
+        if (!heading) {
+            return;
+        }
+
+        const name =
+            heading.textContent
+                .replace(/\s+/g, " ")
+                .trim()
+                .toUpperCase();
+
+        const service = map[name];
+
+        if (!service) {
+            return;
+        }
+
+        const normal =
+            Number(service.harga_normal || 0);
+
+        const jual =
+            Number(service.harga_jual || 0);
+
+        const price =
+            card.querySelector(
+                ".service-price, .price, .harga"
+            );
+
+        if (!price) {
+            return;
+        }
+
+        if (normal > jual && normal > 0) {
+
+            price.innerHTML =
+                "<s style='opacity:.45;margin-right:8px;'>" +
+                fkPublicRupiah(normal) +
+                "</s>" +
+                "<strong>" +
+                fkPublicRupiah(jual) +
+                "</strong>";
+
+        } else {
+
+            price.textContent =
+                fkPublicRupiah(jual);
+        }
+
+    });
+}
+
+async function fkLoadPublicServices() {
+
+    try {
+
+        const result = await FKDB
+            .from("services")
+            .select(
+                "id,nama,harga_normal,harga_jual,aktif,urutan"
+            )
+            .eq("aktif", true)
+            .order("urutan", { ascending:true })
+            .order("nama", { ascending:true });
+
+        if (result.error) {
+            throw result.error;
+        }
+
+        FK_PUBLIC_SERVICES =
+            result.data || [];
+
+        fkApplyPublicServicePrices();
+
+    } catch (err) {
+
+        console.warn(
+            "FK: gagal memuat services.",
+            err
+        );
+    }
+}
+
+window.fkLoadPublicServices =
+    fkLoadPublicServices;
+
+window.fkApplyPublicServicePrices =
+    fkApplyPublicServicePrices;
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function() {
+        setTimeout(function() {
+            fkLoadPublicServices();
+        }, 300);
+    }
+);</script>
 </body>
 </html>
+
 
 
 
