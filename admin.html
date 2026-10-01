@@ -968,6 +968,109 @@ body.fk-auth-loading .main {
         text-align:left;
     }
 }
+
+/* FK PRICE CARD POLISH */
+
+.fk-service-card {
+    position: relative;
+    padding: 22px !important;
+    border-radius: 18px !important;
+}
+
+.fk-service-card-top {
+    margin-bottom: 20px !important;
+}
+
+.fk-service-name {
+    font-size: 17px !important;
+    font-weight: 800 !important;
+    line-height: 1.3 !important;
+}
+
+.fk-service-badge {
+    white-space: nowrap;
+}
+
+.fk-service-prices {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 14px !important;
+    margin-top: 8px !important;
+}
+
+.fk-price-box {
+    min-width: 0 !important;
+    padding: 16px !important;
+    border-radius: 14px !important;
+}
+
+.fk-price-box > label {
+    display: block !important;
+    margin-bottom: 9px !important;
+    font-size: 12px !important;
+    font-weight: 700 !important;
+    line-height: 1.4 !important;
+}
+
+.fk-price-old {
+    display: block !important;
+    margin-bottom: 9px !important;
+    min-height: 20px !important;
+    font-size: 14px !important;
+}
+
+.fk-price-current {
+    display: block !important;
+    margin-bottom: 12px !important;
+    font-size: 20px !important;
+    font-weight: 800 !important;
+    line-height: 1.25 !important;
+}
+
+.fk-service-input {
+    width: 100% !important;
+    box-sizing: border-box !important;
+    padding: 11px 12px !important;
+    border-radius: 10px !important;
+    font-size: 14px !important;
+}
+
+.fk-price-edit-label {
+    display: block !important;
+    margin: 0 0 7px !important;
+    font-size: 11px !important;
+    font-weight: 600 !important;
+    opacity: .7;
+}
+
+.fk-service-toggle {
+    margin-top: 16px !important;
+    padding-top: 15px !important;
+    border-top: 1px solid rgba(127,127,127,.15) !important;
+}
+
+.fk-service-save {
+    width: 100% !important;
+    margin-top: 16px !important;
+    min-height: 44px !important;
+    border-radius: 11px !important;
+    font-weight: 700 !important;
+}
+
+@media (max-width: 650px) {
+    .fk-service-card {
+        padding: 17px !important;
+    }
+
+    .fk-service-prices {
+        grid-template-columns: 1fr !important;
+        gap: 10px !important;
+    }
+
+    .fk-price-current {
+        font-size: 19px !important;
+    }
+}
 </style>
 </head>
 
@@ -1644,11 +1747,11 @@ Belum ada pelanggan yang sedang dilayani.
 
                         '<div class="current-meta">' +
                             fkEscape(current.layanan) +
-                            " Ã¢â‚¬Â¢ " +
+                            " Ã¢â‚¬¢ " +
                             fkEscape(current.jenis) +
                             (
                                 jam
-                                ? " Ã¢â‚¬Â¢ " + fkEscape(jam)
+                                ? " Ã¢â‚¬¢ " + fkEscape(jam)
                                 : ""
                             ) +
                         '</div>' +
@@ -2445,7 +2548,7 @@ async function fkLoadServices() {
                                 </span>
 
                                 <span class="fk-price-old">
-                                    ${hasPromo ? fkRupiah(normal) : "â€”"}
+                                    ${hasPromo ? fkRupiah(normal) : "-"}
                                 </span>
 
                                 <label class="fk-service-input-label">
@@ -2561,7 +2664,7 @@ async function fkLoadServices() {
             document.getElementById("fkServiceTotal");
 
         if (totalElement) {
-            totalElement.textContent = "â€”";
+            totalElement.textContent = "-";
         }
 
         container.innerHTML =
@@ -2675,4 +2778,5 @@ window.fkSaveService = fkSaveService;</script>
 
 </body>
 </html>
+
 
