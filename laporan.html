@@ -546,10 +546,7 @@ return [x,x];
 
 }
 
-return [
-"0000-01-01",
-"9999-12-31"
-];
+return [null,null];
 
 }
 
@@ -813,7 +810,7 @@ function fkRange(){
         return [x,x];
     }
 
-    return ["0000-01-01","9999-12-31"];
+    return [null,null];
 }
 
 function ubahPeriode(){
@@ -845,12 +842,18 @@ async function render(){
 
     const [start,end]=fkRange();
 
-    const {data,error} =
-        await FKDB
-            .from("bookings")
-            .select("*")
+    let query = FKDB
+        .from("bookings")
+        .select("*");
+
+    if(start && end){
+        query = query
             .gte("tanggal",start)
-            .lte("tanggal",end)
+            .lte("tanggal",end);
+    }
+
+    const {data,error} =
+        await query
             .order("tanggal",{ascending:false})
             .order("dibuat_pada",{ascending:false});
 
@@ -1184,6 +1187,8 @@ if (window.FKDB) {
 }</script>
 </body>
 </html>
+
+
 
 
 
