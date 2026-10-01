@@ -359,7 +359,7 @@ FK
 <input
 id="search"
 placeholder="Cari nama atau nomor HP..."
-oninput="render()">
+oninput="fkRenderCustomers()">
 </div>
 
 <div id="customerGrid" class="customer-grid"></div>
@@ -428,357 +428,7 @@ Hapus Pelanggan
 </div>
 </div>
 
-<script>
 
-let data=[];
-
-try{
-data=JSON.parse(localStorage.getItem("barberData")||"[]");
-if(!Array.isArray(data)) data=[];
-}catch(e){
-data=[];
-}
-
-let selectedPhone=null;
-
-function save(){
-localStorage.setItem("barberData",JSON.stringify(data));
-}
-
-function rupiah(n){
-return new Intl.NumberFormat("id-ID",{
-style:"currency",
-currency:"IDR",
-maximumFractionDigits:0
-}).format(Number(n)||0);
-}
-
-function norm(hp){
-
-let x=String(hp||"").replace(/\D/g,"");
-
-if(x.startsWith("62")){
-x="0"+x.substring(2);
-}
-
-return x;
-}
-
-function escapeHTML(value){
-return String(value??"")
-.replace(/&/g,"&amp;")
-.replace(/</g,"&lt;")
-.replace(/>/g,"&gt;")
-.replace(/"/g,"&quot;")
-.replace(/'/g,"&#039;");
-}
-
-function formatTanggal(tanggal){
-
-if(!tanggal) return "-";
-
-const p=String(tanggal).split("-");
-
-if(p.length!==3) return String(tanggal);
-
-const bulan=[
-"Januari","Februari","Maret","April","Mei","Juni",
-"Juli","Agustus","September","Oktober","November","Desember"
-];
-
-return Number(p[2])+" "+bulan[Number(p[1])-1]+" "+p[0];
-
-}
-
-function clock(){
-
-document.getElementById("clock").textContent=
-new Date().toLocaleTimeString("id-ID",{
-hour:"2-digit",
-minute:"2-digit",
-second:"2-digit"
-});
-
-}
-
-setInterval(clock,1000);
-clock();
-
-function render(){
-
-const q=
-document.getElementById("search")
-.value
-.toLowerCase()
-.trim();
-
-const groups={};
-
-data.forEach(x=>{
-
-const phone=norm(x.hp);
-
-if(!phone) return;
-
-if(!groups[phone]){
-groups[phone]=[];
-}
-
-groups[phone].push(x);
-
-});
-
-const customers=
-Object.entries(groups)
-.map(([phone,records])=>{
-
-const sorted=
-[...records].sort((a,b)=>
-String(b.tanggal).localeCompare(String(a.tanggal))||
-Number(b.id||0)-Number(a.id||0)
-);
-
-const selesai=
-records.filter(x=>x.status==="Selesai");
-
-return {
-phone,
-records,
-last:sorted[0],
-visits:selesai.length,
-allVisits:records.length,
-spend:selesai.reduce(
-(a,b)=>a+Number(b.harga||0),0
-)
-};
-
-})
-.filter(x=>{
-
-const nama=String(x.last?.nama||"").toLowerCase();
-
-return !q||
-nama.includes(q)||
-x.phone.includes(q);
-
-})
-.sort((a,b)=>
-String(b.last?.tanggal||"")
-.localeCompare(String(a.last?.tanggal||""))
-);
-
-const grid=
-document.getElementById("customerGrid");
-
-if(!customers.length){
-
-grid.innerHTML=
-'<div class="empty">Pelanggan tidak ditemukan.</div>';
-
-return;
-
-}
-
-grid.innerHTML=
-customers.map(c=>
-
-'<div class="customer">'+
-
-'<div class="customer-name">'+
-escapeHTML(c.last.nama)+
-'</div>'+
-
-'<div class="customer-phone">'+
-escapeHTML(c.phone)+
-'</div>'+
-
-'<div class="customer-stats">'+
-
-'<div class="customer-stat">'+
-'<small>KUNJUNGAN SELESAI</small>'+
-'<strong>'+c.visits+'x</strong>'+
-'</div>'+
-
-'<div class="customer-stat">'+
-'<small>TOTAL BELANJA</small>'+
-'<strong>'+rupiah(c.spend)+'</strong>'+
-'</div>'+
-
-'</div>'+
-
-'<div class="customer-service">'+
-'Terakhir: '+
-escapeHTML(c.last.layanan)+
-'</div>'+
-
-'<button class="btn" onclick="openCustomer(\''+
-c.phone+
-'\')">Lihat Detail</button>'+
-
-'</div>'
-
-).join("");
-
-}
-
-function openCustomer(phone){
-
-selectedPhone=phone;
-
-const records=
-data.filter(x=>norm(x.hp)===phone);
-
-const sorted=
-[...records].sort((a,b)=>
-String(b.tanggal).localeCompare(String(a.tanggal))||
-Number(b.id||0)-Number(a.id||0)
-);
-
-const selesai=
-records.filter(x=>x.status==="Selesai");
-
-document.getElementById("detailName").textContent=
-sorted[0]?.nama||"-";
-
-document.getElementById("detailPhone").textContent=
-phone;
-
-document.getElementById("detailVisits").textContent=
-selesai.length+"x";
-
-document.getElementById("detailSpend").textContent=
-rupiah(
-selesai.reduce(
-(a,b)=>a+Number(b.harga||0),0
-)
-);
-
-document.getElementById("editName").value=
-sorted[0]?.nama||"";
-
-document.getElementById("editPhone").value=
-phone;
-
-document.getElementById("history").innerHTML=
-sorted.map(x=>
-
-'<div class="history-item">'+
-
-'<div>'+
-
-'<strong>'+
-escapeHTML(x.layanan)+
-'</strong>'+
-
-'<div class="history-meta">'+
-escapeHTML(formatTanggal(x.tanggal))+
-(x.jamBooking?
-" • "+escapeHTML(x.jamBooking):"")+
-" • "+
-escapeHTML(x.status)+
-'</div>'+
-
-'</div>'+
-
-'<strong>'+
-rupiah(x.harga)+
-'</strong>'+
-
-'</div>'
-
-).join("");
-
-document.getElementById("modal")
-.classList.add("show");
-
-}
-
-function closeModal(){
-
-document.getElementById("modal")
-.classList.remove("show");
-
-selectedPhone=null;
-
-}
-
-function saveCustomer(){
-
-if(!selectedPhone) return;
-
-const name=
-document.getElementById("editName")
-.value.trim();
-
-const phone=
-norm(
-document.getElementById("editPhone").value
-);
-
-if(!name || phone.length<8){
-
-alert("Nama atau nomor HP tidak valid.");
-
-return;
-
-}
-
-const oldPhone=selectedPhone;
-
-data.forEach(x=>{
-
-if(norm(x.hp)===oldPhone){
-
-x.nama=name;
-x.hp=phone;
-
-}
-
-});
-
-save();
-
-closeModal();
-
-render();
-
-}
-
-function deleteCustomer(){
-
-if(!selectedPhone) return;
-
-if(!confirm(
-"Hapus seluruh riwayat pelanggan ini?"
-)){
-return;
-}
-
-data=
-data.filter(x=>
-norm(x.hp)!==selectedPhone
-);
-
-save();
-
-closeModal();
-
-render();
-
-}
-
-document.getElementById("modal")
-.addEventListener("click",e=>{
-
-if(e.target.id==="modal"){
-closeModal();
-}
-
-});
-
-render();
-
-</script>
 
 <script id="fk-supabase-migration">
 
@@ -1060,7 +710,7 @@ function fkRenderCustomers(){
                 );
 
             return (
-                '<div class="customer-card" ' +
+                '<div class="customer" ' +
                 'onclick="fkOpenCustomer(\''+
                 phone+
                 '\')">' +
@@ -1273,6 +923,36 @@ async function deleteCustomer(){
     await fkLoadCustomers();
 }
 
+
+// ============================================================
+// FK REALTIME - PELANGGAN
+// ============================================================
+
+let fkCustomersChannel = null;
+
+function fkStartRealtime(){
+
+    if(fkCustomersChannel){
+        FKDB.removeChannel(fkCustomersChannel);
+    }
+
+    fkCustomersChannel =
+        FKDB
+            .channel("fk-customers-realtime")
+            .on(
+                "postgres_changes",
+                {
+                    event:"*",
+                    schema:"public",
+                    table:"bookings"
+                },
+                function(){
+                    fkLoadCustomers();
+                }
+            )
+            .subscribe();
+}
+
 async function fkStart(){
 
     const {data,error} =
@@ -1303,4 +983,5 @@ document.addEventListener(
 </script>
 </body>
 </html>
+
 
