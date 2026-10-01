@@ -5187,8 +5187,107 @@ document.addEventListener(
 })();
 
 </script>
+<script id="fk-booking-direct-service">
+document.addEventListener("DOMContentLoaded", () => {
+    const findExactText = (text) => {
+        const all = document.querySelectorAll("body *");
+        return [...all].find(el => {
+            return el.children.length === 0 &&
+                   el.textContent.trim() === text;
+        });
+    };
+
+    const title = findExactText("Siap Upgrade Style?");
+
+    if (!title) return;
+
+    /*
+     * Cari container yang berisi judul + 4 langkah,
+     * tetapi JANGAN menghapus container booking/form.
+     */
+    let titleContainer = title.parentElement;
+
+    while (
+        titleContainer &&
+        titleContainer.parentElement &&
+        titleContainer.parentElement.textContent.includes("Siap Upgrade Style?") &&
+        titleContainer.parentElement.textContent.includes("Pilih Layanan")
+    ) {
+        titleContainer = titleContainer.parentElement;
+    }
+
+    /*
+     * Hapus elemen-elemen intro:
+     * - BOOK YOUR VISIT
+     * - Siap Upgrade Style?
+     * - deskripsi
+     * - 01 Pilih Layanan
+     * - 02 Pilih Kunjungan
+     * - 03 Tentukan Waktu
+     * - 04 Konfirmasi
+     *
+     * Form booking tetap dipertahankan.
+     */
+    const bookingSection = title.closest("section") || titleContainer;
+
+    const removeTexts = [
+        "BOOK YOUR VISIT",
+        "Siap Upgrade Style?",
+        "Pilih Kunjungan",
+        "Tentukan Waktu",
+        "Konfirmasi"
+    ];
+
+    const elements = [...bookingSection.querySelectorAll("*")];
+
+    elements.forEach(el => {
+        const text = el.textContent.trim();
+
+        if (
+            el.children.length === 0 &&
+            removeTexts.includes(text)
+        ) {
+            let box = el.parentElement;
+
+            /*
+             * Naik sedikit untuk mendapatkan card/header
+             * tanpa mengambil seluruh form booking.
+             */
+            if (box) {
+                box.remove();
+            }
+        }
+    });
+
+    /*
+     * Bersihkan card langkah yang masih tersisa berdasarkan
+     * nomor 01-04 jika masih ada.
+     */
+    [...bookingSection.querySelectorAll("*")].forEach(el => {
+        const text = el.textContent.trim();
+
+        if (
+            el.children.length === 0 &&
+            (
+                text === "01" ||
+                text === "02" ||
+                text === "03" ||
+                text === "04"
+            )
+        ) {
+            const parent = el.parentElement;
+            if (parent && parent.textContent.length < 150) {
+                parent.remove();
+            }
+        }
+    });
+
+    console.log("[FK] Booking intro disembunyikan. Langsung ke pilihan layanan.");
+});
+</script>
 </body>
 </html>
+
 
 
 
