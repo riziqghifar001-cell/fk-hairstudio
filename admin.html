@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="id">
 <head>
 
@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#0b0b0d">
 
-<title>FK Admin â€” Dashboard</title>
+<title>FK Admin Ã¢â‚¬â€ Dashboard</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 
@@ -1141,7 +1141,7 @@ Belum ada pelanggan yang sedang dilayani.
                 onclick="fkLoadServices()"
                 title="Muat ulang layanan"
             >
-                <span>↻</span>
+                <span>â†»</span>
                 Refresh
             </button>
 
@@ -1168,7 +1168,7 @@ Belum ada pelanggan yang sedang dilayani.
 
 <script>
 /* =========================================================
-   FK ADMIN â€” SUPABASE SINGLE CLIENT
+   FK ADMIN Ã¢â‚¬â€ SUPABASE SINGLE CLIENT
    ========================================================= */
 
 (function () {
@@ -1245,6 +1245,8 @@ Belum ada pelanggan yang sedang dilayani.
         }).format(Number(n) || 0);
     }
 
+    window.fkRupiah = fkRupiah;
+
     function fkNorm(hp) {
 
         let x = String(hp || "").replace(/\D/g, "");
@@ -1320,7 +1322,7 @@ Belum ada pelanggan yang sedang dilayani.
                 </div>
 
                 <div class="fk-login-subtitle">
-                    HAIRSTUDIO & BARBERSHOP â€” ADMIN
+                    HAIRSTUDIO & BARBERSHOP Ã¢â‚¬â€ ADMIN
                 </div>
 
                 <form id="fkAdminLoginForm">
@@ -1636,17 +1638,17 @@ Belum ada pelanggan yang sedang dilayani.
                             fkEscape(
                                 current.nomor_antrean
                             ) +
-                            " â€” " +
+                            " Ã¢â‚¬â€ " +
                             fkEscape(current.nama) +
                         '</div>' +
 
                         '<div class="current-meta">' +
                             fkEscape(current.layanan) +
-                            " â€¢ " +
+                            " Ã¢â‚¬Â¢ " +
                             fkEscape(current.jenis) +
                             (
                                 jam
-                                ? " â€¢ " + fkEscape(jam)
+                                ? " Ã¢â‚¬Â¢ " + fkEscape(jam)
                                 : ""
                             ) +
                         '</div>' +
@@ -2443,7 +2445,7 @@ async function fkLoadServices() {
                                 </span>
 
                                 <span class="fk-price-old">
-                                    ${hasPromo ? fkRupiah(normal) : "—"}
+                                    ${hasPromo ? fkRupiah(normal) : "â€”"}
                                 </span>
 
                                 <label class="fk-service-input-label">
@@ -2559,7 +2561,7 @@ async function fkLoadServices() {
             document.getElementById("fkServiceTotal");
 
         if (totalElement) {
-            totalElement.textContent = "—";
+            totalElement.textContent = "â€”";
         }
 
         container.innerHTML =
@@ -2637,7 +2639,7 @@ async function fkSaveService(id, button) {
         }
 
         if (message) {
-            message.textContent = "Tersimpan âœ“";
+            message.textContent = "Tersimpan Ã¢Å“â€œ";
         }
 
         setTimeout(function() {
@@ -2673,3 +2675,4 @@ window.fkSaveService = fkSaveService;</script>
 
 </body>
 </html>
+
