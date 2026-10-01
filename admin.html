@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="id">
 <head>
 
@@ -464,6 +464,20 @@ body.fk-auth-loading .main {
 }
 </style>
 
+
+<style>
+.fk-delete-btn {
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+}
+
+.fk-delete-icon {
+    font-size: 14px;
+    line-height: 1;
+}
+</style>
 </head>
 
 <body>
@@ -1290,15 +1304,25 @@ Belum ada pelanggan yang sedang dilayani.
                     }
 
                     if (x.status === "Batal") {
+    action =
+        '<button class="action btn-reset" ' +
+        'onclick="fkBukaLagi(\'' +
+        x.id +
+        '\')">' +
+        'Aktifkan' +
+        '</button>' +
 
-                        action =
-                            '<button class="action btn-reset" ' +
-                            'onclick="fkBukaLagi(\'' +
-                            x.id +
-                            '\')">' +
-                            'Aktifkan' +
-                            '</button>';
-                    }
+        '<button class="action fk-delete-btn" ' +
+        'title="Hapus antrean secara permanen" ' +
+        'onclick="fkHapus(\'' +
+        x.id +
+        '\', \'' +
+        String(x.nomor_antrean || "").replace(/'/g, "\\'") +
+        '\')">' +
+        '<span class="fk-delete-icon">🗑</span>' +
+        'Hapus' +
+        '</button>';
+}
 
                     const jam =
                         x.jam_booking
@@ -2067,4 +2091,3 @@ window.fkSaveService = fkSaveService;</script>
 
 </body>
 </html>
-
